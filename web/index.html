@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>СельРиск Алматы</title>
+<meta name="description" content="Суточная вероятность схода селя в бассейнах Малой и Большой Алматинки и Талгара по осадкам, снегу и сейсмике.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 28 12 10l5 8 4-6 9 16z' fill='%231f6f5c'/%3E%3Cpath d='M12 10l3 5-3-1-2 2z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 28 12 10l5 8 4-6 9 16z"/><path class="snow" d="M12 10l3 5-3-1-2 2z"/></svg>
+      <span>СельРиск <b>Алматы</b></span>
+    </a>
+    <nav>
+      <a href="#calc">Калькулятор</a>
+      <a href="#map-sec">Карта</a>
+      <a href="#about">О модели</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <h1>Какова вероятность схода селя?</h1>
+    <p>Задайте осадки, снег и сейсмику — модель, обученная на реальной погоде ERA5-Land 2016–2023,
+      оценит вероятность схода селя за сутки в бассейнах Малой и Большой Алматинки и Талгара
+      и покажет на карте, где на склонах опаснее всего.</p>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="Источник данных">
+    <button role="tab" data-mode="manual" aria-selected="true">Ввести вручную</button>
+    <button role="tab" data-mode="archive" aria-selected="false">Архив 2016–2023</button>
+    <button role="tab" data-mode="live" aria-selected="false">Сейчас и прогноз</button>
+  </div>
+
+  <section id="calc" class="calc">
+    <aside class="panel inputs">
+
+      <!-- ===== Ручной ввод ===== -->
+      <div data-pane="manual">
+        <h2>Условия</h2>
+        <div class="chips" id="presets" aria-label="Готовые сценарии"></div>
+
+        <label class="field">
+          <span class="lbl">Дата <small>влияет через сезон</small></span>
+          <input type="date" id="in-date">
+        </label>
+
+        <fieldset class="field">
+          <legend class="lbl">Осадки по дням, мм</legend>
+          <div class="rain7" id="rain7"></div>
+        </fieldset>
+
+        <label class="field">
+          <span class="lbl">Осадки за 3 недели до этого, мм
+            <button type="button" class="linkbtn" id="climBtn">по климату</button></span>
+          <input type="number" id="in-prev" min="0" step="1" inputmode="decimal">
+          <small class="hint">Нужны, чтобы оценить, насколько уже увлажнён грунт.</small>
+        </label>
+
+        <div class="field">
+          <label class="lbl" for="in-t">Температура в горах, °C
+            <small>средняя за 3 дня на высоте 2–3,5 км (≈ городская − 10 °C)</small></label>
+          <div class="rng"><input type="range" id="in-t-r" min="-20" max="25" step="0.5" aria-label="Температура, ползунок"><input type="number" id="in-t" step="0.5" inputmode="decimal"></div>
+        </div>
+
+        <div class="field">
+          <label class="lbl" for="in-swe">Запас воды в снеге, мм
+            <small>≈ высота снега в см × 3</small></label>
+          <div class="rng"><input type="range" id="in-swe-r" min="0" max="600" step="5" aria-label="Запас воды в снеге, ползунок"><input type="number" id="in-swe" min="0" step="5" inputmode="decimal"></div>
+        </div>
+
+        <div class="field">
+          <label class="lbl" for="in-melt">Таяние снега за сутки, мм</label>
+          <div class="rng"><input type="range" id="in-melt-r" min="0" max="25" step="0.5" aria-label="Таяние снега, ползунок"><input type="number" id="in-melt" min="0" step="0.5" inputmode="decimal"></div>
+        </div>
+
+        <div class="field">
+          <label class="lbl" for="in-mag">Землетрясение за 3 дня, магнитуда
+            <small>в радиусе 150 км; 0 — толчков не было</small></label>
+          <div class="rng"><input type="range" id="in-mag-r" min="0" max="7" step="0.1" aria-label="Магнитуда, ползунок"><input type="number" id="in-mag" min="0" max="9" step="0.1" inputmode="decimal"></div>
+        </div>
+      </div>
+
+      <!-- ===== Архив ===== -->
+      <div data-pane="archive" hidden>
+        <h2>День из архива</h2>
+        <p class="muted">Реальная погода ERA5-Land по каждому бассейну. Признаки и проценты считаются прямо в браузере той же моделью.</p>
+        <div class="field">
+          <label class="lbl" for="arc-date">Дата</label>
+          <div class="datenav">
+            <button type="button" class="iconbtn" id="arc-prev" aria-label="Предыдущий день">‹</button>
+            <input type="date" id="arc-date">
+            <button type="button" class="iconbtn" id="arc-next" aria-label="Следующий день">›</button>
+          </div>
+        </div>
+        <label class="field">
+          <span class="lbl">Дни с событием в обучающих данных</span>
+          <select id="arc-events"></select>
+        </label>
+        <div class="field">
+          <span class="lbl">Дни с наибольшей вероятностью</span>
+          <div class="chips" id="arc-top"></div>
+        </div>
+        <p class="hint">Щёлкните по графику справа, чтобы выбрать другой день.</p>
+      </div>
+
+      <!-- ===== Живая погода ===== -->
+      <div data-pane="live" hidden>
+        <h2>Погода сейчас</h2>
+        <p class="muted">Осадки, температура и снег — прогноз <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
+          в тех же 21 узлах сетки, что и ERA5-Land. Землетрясения — каталог
+          <a href="https://earthquake.usgs.gov" target="_blank" rel="noopener">USGS</a>.</p>
+        <button type="button" class="btn" id="live-load">Обновить данные</button>
+        <div class="status" id="live-status" role="status"></div>
+        <div class="field">
+          <span class="lbl">День</span>
+          <div class="chips" id="live-days"></div>
+        </div>
+        <p class="note">Модель обучена на реанализе ERA5-Land, а здесь — оперативный прогноз другой погодной модели.
+          Оценка ориентировочная.</p>
+      </div>
+    </aside>
+
+    <div class="results">
+      <div class="res-head">
+        <h2 id="res-title">Вероятность схода селя за сутки</h2>
+        <p class="muted" id="res-sub"></p>
+      </div>
+      <div class="cards" id="cards"></div>
+      <div class="note warn" id="clip-warn" hidden></div>
+
+      <div class="panel" id="chart-panel" hidden>
+        <h3 id="chart-title">Вероятность по дням</h3>
+        <div class="chart" id="chart"></div>
+        <div class="legend-row" id="chart-legend"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Что влияет на вероятность · <span id="factor-basin"></span></h3>
+        <p class="hint">Во сколько раз каждый фактор меняет шансы схода по сравнению с днём со средними условиями
+          2016–2023. Выберите бассейн, нажав на его карточку.</p>
+        <div class="factors" id="factors"></div>
+      </div>
+
+      <div class="panel" id="cond-panel" hidden>
+        <h3>Условия выбранного дня</h3>
+        <div class="table-wrap"><table class="cond" id="cond"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="map-sec" class="panel map-panel">
+    <div class="map-head">
+      <h2>Карта риска</h2>
+      <div class="seg" role="group" aria-label="Слой карты">
+        <button type="button" data-layer="risk" aria-pressed="true">Риск на выбранный день</button>
+        <button type="button" data-layer="susc" aria-pressed="false">Подверженность склонов</button>
+      </div>
+    </div>
+    <div id="map" aria-label="Карта риска селей"></div>
+    <p class="hint">Риск ячейки 400 м = подверженность склона (модель «где»: Random Forest по рельефу, руслам и моренным озёрам)
+      × вероятность схода в бассейне за сутки. При низком риске слой почти прозрачный. Щёлкните по карте, чтобы увидеть значения.</p>
+  </section>
+
+  <section id="about" class="about">
+    <h2>Как это работает</h2>
+    <div class="steps">
+      <div class="panel step">
+        <span class="num">1</span>
+        <h3>Где — подверженность</h3>
+        <p>Random Forest по рельефу Copernicus GLO-30: уклон, высота, кривизна, влажность рельефа,
+          расстояние до русел и моренных озёр. ROC-AUC при пространственной кросс-валидации —
+          <b id="m-susc"></b>.</p>
+      </div>
+      <div class="panel step">
+        <span class="num">2</span>
+        <h3>Когда — вероятность за сутки</h3>
+        <p>Логистическая регрессия по осадкам за 1/3/7 дней, увлажнённости, теплу, снегу, таянию,
+          сейсмике и сезону. Проверка на 2020–2023 годах, которые модель не видела:
+          ROC-AUC <b id="m-auc"></b>, ожидала <b id="m-exp"></b> событий при <b id="m-obs"></b> фактических.</p>
+      </div>
+      <div class="panel step">
+        <span class="num">3</span>
+        <h3>Риск = где × когда</h3>
+        <p>Вероятность бассейна умножается на подверженность каждой ячейки 400 × 400 м.
+          Так видно, какие именно склоны и русла опасны в конкретный день.</p>
+      </div>
+    </div>
+
+    <h3>Уровни опасности</h3>
+    <div class="table-wrap"><table class="levels" id="levels"></table></div>
+
+    <div class="note limits">
+      <h3>Ограничения — прочитайте обязательно</h3>
+      <ul>
+        <li><b>Метки сходов демонстрационные.</b> Открытого каталога селей с датами нет, поэтому дни
+          «событий» сгенерированы физически обоснованной моделью по <i>реальной</i> погоде ERA5-Land. Проценты
+          показывают работу метода, а не официальный прогноз. С реальным каталогом Казселезащиты модель
+          переобучается без изменений в коде.</li>
+        <li><b>Это не официальное предупреждение.</b> Следуйте сообщениям МЧС РК и Казселезащиты.</li>
+        <li>Модель не экстраполирует: значения выше наблюдавшихся в 2016–2023 годах считаются равными максимуму.</li>
+        <li>Землетрясений M ≥ 3 рядом за 2016–2023 было мало (<span id="m-eq"></span> дней), поэтому их вклад оценён грубо.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-links">
+      <a href="../docs/poster/poster.html">Постер</a>
+      <a href="../docs/slides/slides.html">Презентация</a>
+      <a href="https://github.com/dulattastanbay-dev/selrisk-almaty/blob/main/docs/article/article.md">Статья</a>
+      <a href="https://github.com/dulattastanbay-dev/selrisk-almaty">Код на GitHub</a>
+    </p>
+    <p>Данные: ERA5-Land (Copernicus C3S), Copernicus GLO-30, USGS, Open-Meteo, © участники OpenStreetMap.
+      Модель: SelRisk-Almaty · данные сгенерированы <span id="m-gen"></span>.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data/selrisk_data.js?v=2"></script>
+<script src="model.js?v=2"></script>
+<script src="app.js?v=2"></script>
+</body>
+</html>

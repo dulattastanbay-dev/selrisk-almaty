@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SelRisk-Almaty · презентация</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#5c554c; --paper:#f6f2ea; --panel:#fffdf9;
+    --line:#d9cfbe; --rock:#3d5a4c; --rock2:#2c4034; --snow:#eef3f2;
+    --hazard:#c0392b; --hazard2:#e67e22; --water:#2c6e8f; --gold:#b8860b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--rock2);color:var(--ink);
+    font-family:"PT Sans",system-ui,sans-serif;line-height:1.5}
+  h1,h2,h3,.kicker{font-family:"Oswald",system-ui,sans-serif;letter-spacing:.4px}
+  .deck{height:100vh;display:grid;place-items:center;padding:24px}
+  .slide{display:none;width:min(1080px,94vw);height:min(660px,86vh);
+    background:var(--paper);border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.35);
+    padding:46px 54px;overflow:hidden;position:relative;flex-direction:column}
+  .slide.active{display:flex;animation:fade .3s ease}
+  @keyframes fade{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .kicker{display:inline-block;font-size:12px;font-weight:600;text-transform:uppercase;
+    letter-spacing:1.8px;color:#fff;background:var(--rock);padding:5px 12px;border-radius:6px}
+  .kicker.haz{background:var(--hazard)} .kicker.wat{background:var(--water)} .kicker.gold{background:var(--gold)}
+  h1{font-size:46px;line-height:1.05;margin:16px 0 10px}
+  h2{font-size:34px;margin:12px 0 14px;color:var(--rock2)}
+  p{font-size:21px;margin:8px 0} li{font-size:20px;margin:8px 0}
+  ul{padding-left:22px}
+  .muted{color:var(--muted)}
+  .fill{flex:1;display:flex;gap:26px;align-items:center;min-height:0}
+  .fill img{max-height:430px;max-width:60%;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .col{flex:1;min-width:0}
+  .big{font-family:"Oswald";font-size:26px;color:var(--hazard);font-weight:600}
+  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:8px}
+  .metric{background:var(--snow);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+  .metric b{font-family:"Oswald";font-size:40px;color:var(--rock2);display:block;line-height:1}
+  .metric span{font-size:15px;color:var(--muted)}
+  .flow{display:flex;align-items:center;gap:14px;margin:18px 0}
+  .flow .node{flex:1;text-align:center;background:var(--snow);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .flow .node .t{font-family:"Oswald";font-size:22px;color:var(--rock2)}
+  .flow .node .d{font-size:15px;color:var(--muted)}
+  .flow .op{font-family:"Oswald";font-size:34px;color:var(--hazard)}
+  .title-slide{background:linear-gradient(160deg,#fffdf9,#eef3f2)}
+  .authors{font-size:18px;color:var(--rock2);font-weight:700;margin-top:auto}
+  /* панель навигации */
+  .bar{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;
+    align-items:center;gap:16px;padding:12px;color:#cfe0da;font-size:14px}
+  .bar button{font-family:"Oswald";background:var(--rock);color:#fff;border:none;
+    border-radius:8px;padding:8px 14px;font-size:15px;cursor:pointer}
+  .bar button:hover{background:var(--rock2)}
+  .dots{display:flex;gap:6px}
+  .dot{width:9px;height:9px;border-radius:50%;background:#6d8a7e;cursor:pointer}
+  .dot.on{background:#fff}
+  .num{position:absolute;right:22px;bottom:16px;font-family:"Oswald";color:var(--muted);font-size:14px}
+  @media print{
+    body{background:#fff}.bar{display:none}
+    .slide{display:flex!important;page-break-after:always;box-shadow:none;height:auto;min-height:90vh}
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <section class="slide active title-slide">
+    <span class="kicker">Республиканский конкурс научных проектов · 2026</span>
+    <h1>SelRisk-Almaty</h1>
+    <h2 style="margin-top:0">Оценка риска схода селей и оползней<br>в горах вокруг Алматы</h2>
+    <p class="muted">Двухуровневая модель на открытых данных:<br>
+      подверженность склонов (где) × вероятность триггера (когда) → карта риска.</p>
+    <div class="authors">Автор: [ФИО] · Научный руководитель: [ФИО] · [Учебное заведение]</div>
+    <div class="num">1</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker haz">Проблема</span>
+    <h2>Алматы — под селевой угрозой</h2>
+    <div class="fill">
+      <div class="col">
+        <ul>
+          <li><b>1921</b> — катастрофический сель по М. Алматинке, сотни жертв.</li>
+          <li><b>1963</b> — прорыв морены, уничтожение оз. Иссык.</li>
+          <li><b>1973</b> — сель остановлен плотиной Медеу.</li>
+        </ul>
+        <p>Деградация ледников → рост числа и объёма моренных озёр →
+        растущая угроза прорывных селей (GLOF).</p>
+        <p class="big">Нужна количественная, воспроизводимая оценка риска.</p>
+      </div>
+    </div>
+    <div class="num">2</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Идея</span>
+    <h2>Разделяем задачу на два уровня</h2>
+    <div class="flow">
+      <div class="node"><div class="t">Подверженность</div><div class="d">Random Forest<br>рельеф · русла · озёра</div></div>
+      <div class="op">×</div>
+      <div class="node"><div class="t">Триггер</div><div class="d">бустинг + порог I–D<br>осадки · снег · сейсмика</div></div>
+      <div class="op">=</div>
+      <div class="node" style="background:#fdeee7;border-color:#e7c4b3"><div class="t" style="color:var(--hazard)">Риск</div><div class="d">суточная карта<br>по бассейнам</div></div>
+    </div>
+    <p><b>Почему так:</b> у каждого уровня своя метрика и своя честная валидация —
+    задача становится <b>проверяемой</b>, а не «красивой картой».</p>
+    <div class="num">3</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Данные</span>
+    <h2>Только открытые источники</h2>
+    <div class="fill">
+      <div class="col">
+        <ul>
+          <li><b>ERA5-Land</b> — реальные осадки/температура/снег 2016–2023 (96 мес.).</li>
+          <li><b>Copernicus GLO-30</b> — реальная ЦМР → уклон, кривизна, TWI, сток D8.</li>
+          <li><b>USGS FDSN</b> — каталог землетрясений (реальный).</li>
+          <li><b>NASA COOLR / GLC</b> — каталог сходов; инвентаризация моренных озёр.</li>
+        </ul>
+        <p class="muted">Открытого плотного каталога сходов нет — это главная
+        трудность темы. Пайплайн работает на физически обоснованной выборке и
+        реальных данных; реальная инвентаризация подставляется без изменения моделей.</p>
+      </div>
+    </div>
+    <div class="num">4</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker gold">Результат · где</span>
+    <h2>Модель подверженности</h2>
+    <div class="fill">
+      <img src="../../data/outputs/03_susceptibility.png" alt="Карта подверженности">
+      <div class="col">
+        <p>ROC-AUC ≈ <b>0.81</b> (пространственная кросс-валидация).</p>
+        <p>Важнейшие факторы: уклон, высота, эродируемость пород, профильная
+        кривизна, близость к моренным озёрам.</p>
+        <p class="muted">Максимум подверженности — на крутых склонах зоны
+        формирования ниже моренных озёр.</p>
+      </div>
+    </div>
+    <div class="num">5</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker gold">Результат · когда</span>
+    <h2>Порог «интенсивность–длительность»</h2>
+    <div class="fill">
+      <img src="../../data/outputs/07_id_threshold.png" alt="Порог I-D">
+      <div class="col">
+        <p>Порог <b>I = 10.3·D<sup>−0.18</sup></b> отделяет триггерные дожди.</p>
+        <p>recall ≈ <b>0.89</b>, но precision ≈ 0.10 — много ложных тревог.</p>
+        <p class="big">→ поэтому переходим к ML-модели триггера.</p>
+      </div>
+    </div>
+    <div class="num">6</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker gold">Результат · когда</span>
+    <h2>Вероятностная модель триггера</h2>
+    <div class="fill">
+      <img src="../../data/outputs/06_trigger_roc_pr.png" alt="ROC/PR триггера">
+      <div class="col">
+        <div class="metrics">
+          <div class="metric"><b>0.91</b><span>ROC-AUC ± 0.08<br>(8 seed)</span></div>
+          <div class="metric"><b>0.18</b><span>AP ± 0.06<br>(8 seed)</span></div>
+        </div>
+        <p class="muted">Реальные осадки ERA5, среднее ± СКО по 8 seed. Высокий
+        ROC-AUC при низком AP — крайняя редкость событий (~0.4 % дней, в тесте 7).</p>
+      </div>
+    </div>
+    <div class="num">7</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker haz">Ключевой вывод · абляция</span>
+    <h2>Сейсмика — вторичный триггер</h2>
+    <div class="fill">
+      <img src="../../data/outputs/12_ablation_trigger.png" alt="Абляция признаков">
+      <div class="col">
+        <p class="big">Без осадков: AP 0.29 → 0.011<br>Без сейсмики: ROC-AUC 0.94 → 0.96</p>
+        <p>На реальных данных: удаление осадков <b>обрушивает</b> качество (AP в 26 раз
+        ниже), удаление сейсмики — <b>нет</b>. Важность сейсмики по перестановкам = 0.</p>
+        <p class="muted">Согласуется с природой селей Алматы: прорывы озёр (GLOF) и
+        дожди, а не землетрясения.</p>
+      </div>
+    </div>
+    <div class="num">8</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Научная строгость</span>
+    <h2>Устойчивость и честная оценка</h2>
+    <div class="fill">
+      <img src="../../data/outputs/13_seed_variance.png" alt="Разброс по seed">
+      <div class="col">
+        <ul>
+          <li><b>Разброс по 8 seed</b> (mean ± std) — не одно «удачное» число.</li>
+          <li><b>Бейзлайны:</b> RF ≈ логрег (подвер.); триггер: бустинг лучше по AP, логрег — по ROC-AUC.</li>
+          <li><b>Абляция</b> групп признаков — вклад каждого фактора.</li>
+          <li><b>Калибровка</b> вероятностей (reliability, Brier).</li>
+        </ul>
+        <p class="muted">Пространственная CV (подверженность) и временной holdout
+        (триггер) — без утечки.</p>
+      </div>
+    </div>
+    <div class="num">9</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker wat">Применение</span>
+    <h2>Обложной весенний дождь — 25.04.2019</h2>
+    <div class="fill">
+      <img src="../../data/outputs/09_risk_map_peakday.png" alt="Карта риска 25.04.2019">
+      <div class="col">
+        <p>ERA5: 50–52 мм за 3 дня на насыщенный грунт — сработали <b>все три
+        бассейна</b>, риск до <b style="color:var(--hazard)">0.98</b>.</p>
+        <p>Максимум — в зонах формирования на крутых склонах ниже моренных озёр;
+        долины и водоразделы — низкий риск.</p>
+      </div>
+    </div>
+    <div class="num">10</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker wat">Применение</span>
+    <h2>Сайт-калькулятор вероятности селя</h2>
+    <div class="fill">
+      <div class="col">
+        <ul>
+          <li><b>Ввести вручную</b> — осадки, температура, снег, магнитуда → вероятность схода за сутки, %.</li>
+          <li><b>Архив 2016–2023</b> — любой день реальной погоды ERA5-Land.</li>
+          <li><b>Сейчас и прогноз</b> — живая погода Open-Meteo + землетрясения USGS на неделю вперёд.</li>
+          <li>Карта риска по ячейкам 400 м и вклад каждого фактора.</li>
+        </ul>
+        <p class="muted">Откалиброванная логистическая регрессия: на 2020–2023 ожидала
+        10.3 события при 7 фактических, ROC-AUC 0.98.</p>
+        <p class="big">https://dulattastanbay-dev.github.io/selrisk-almaty/</p>
+      </div>
+    </div>
+    <div class="num">11</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Итоги</span>
+    <h2>Вклад и дальнейшая работа</h2>
+    <div class="fill">
+      <div class="col">
+        <h3 style="color:var(--rock2);font-size:20px">Сделано</h3>
+        <ul>
+          <li>Двухуровневая модель риска на открытых данных (реальные ЦМР и сейсмика).</li>
+          <li>Пайплайн + сайт-калькулятор с живым прогнозом + Leaflet-карта + ГИС-экспорт.</li>
+          <li>Абляцией показана вторичность сейсмики; метрики устойчивы по 8 seed.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3 style="color:var(--rock2);font-size:20px">Дальше</h3>
+        <ul>
+          <li>Подключить реальный каталог сходов Казселезащиты.</li>
+          <li>Выделить водосборы по ЦМР; учесть динамику озёр по снимкам.</li>
+          <li>Оповещение по прогнозу погоды на основе сайта.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="num">12</div>
+  </section>
+
+  <section class="slide title-slide">
+    <span class="kicker">Спасибо за внимание</span>
+    <h1>Вопросы?</h1>
+    <p class="muted">Код, данные и статья — открыты (MIT).<br>
+      Сайт: <b>https://dulattastanbay-dev.github.io/selrisk-almaty/</b></p>
+    <div class="authors">SelRisk-Almaty · 2026</div>
+    <div class="num">13</div>
+  </section>
+
+</div>
+
+<div class="bar">
+  <button id="prev">‹ Назад</button>
+  <div class="dots" id="dots"></div>
+  <button id="next">Вперёд ›</button>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsBox=document.getElementById('dots');
+  let i=0;
+  slides.forEach((_,k)=>{const d=document.createElement('div');d.className='dot'+(k===0?' on':'');
+    d.onclick=()=>go(k);dotsBox.appendChild(d);});
+  const dots=[...document.querySelectorAll('.dot')];
+  function go(n){i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));}
+  document.getElementById('next').onclick=()=>go(i+1);
+  document.getElementById('prev').onclick=()=>go(i-1);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1);}
+    if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(i-1);}
+    if(e.key==='Home')go(0); if(e.key==='End')go(slides.length-1);
+  });
+</script>
+</body>
+</html>

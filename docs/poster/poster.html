@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SelRisk-Almaty · постер</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#5c554c; --paper:#f6f2ea; --panel:#fffdf9;
+    --line:#d9cfbe; --rock:#3d5a4c; --rock2:#2c4034; --snow:#eef3f2;
+    --hazard:#c0392b; --hazard2:#e67e22; --water:#2c6e8f; --gold:#b8860b;
+    --shadow:0 2px 10px rgba(40,30,15,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"PT Sans",system-ui,sans-serif;line-height:1.45}
+  .poster{width:1400px;margin:0 auto;padding:34px 34px 22px}
+  h1,h2,h3,.kicker{font-family:"Oswald",system-ui,sans-serif;letter-spacing:.4px}
+  /* --- заголовок --- */
+  header{display:flex;gap:24px;align-items:center;border-bottom:5px solid var(--rock);
+    padding-bottom:18px;margin-bottom:22px}
+  .crest{flex:0 0 96px;height:96px;border-radius:16px;background:
+    linear-gradient(160deg,var(--rock),var(--rock2));display:grid;place-items:center;
+    box-shadow:var(--shadow)}
+  .crest svg{width:64px;height:64px}
+  header h1{font-size:44px;line-height:1.02;margin:0 0 6px;font-weight:700}
+  header .sub{font-size:19px;color:var(--muted);max-width:1050px}
+  .authors{margin-top:8px;font-size:15px;color:var(--rock2);font-weight:700}
+  /* --- сетка колонок --- */
+  .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;box-shadow:var(--shadow);break-inside:avoid}
+  .kicker{display:inline-block;font-size:12px;font-weight:600;text-transform:uppercase;
+    letter-spacing:1.6px;color:#fff;background:var(--rock);padding:4px 10px;border-radius:6px;
+    margin-bottom:10px}
+  .kicker.haz{background:var(--hazard)} .kicker.wat{background:var(--water)}
+  .kicker.gold{background:var(--gold)}
+  h2{font-size:22px;margin:2px 0 8px}
+  h3{font-size:16px;margin:12px 0 4px;color:var(--rock2)}
+  p{margin:6px 0;font-size:15.5px}
+  ul{margin:6px 0;padding-left:18px;font-size:15px} li{margin:3px 0}
+  figure{margin:10px 0 4px}
+  figure img{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+  figcaption{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .span2{grid-column:span 2}
+  /* --- метрики --- */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0}
+  .metric{background:var(--snow);border:1px solid var(--line);border-radius:10px;
+    padding:10px;text-align:center}
+  .metric b{font-family:"Oswald";font-size:28px;color:var(--rock2);display:block;line-height:1}
+  .metric span{font-size:12px;color:var(--muted)}
+  /* --- вывод-плашка --- */
+  .finding{background:linear-gradient(160deg,#fff7f3,#fdeee7);
+    border:1px solid #e7c4b3;border-left:6px solid var(--hazard)}
+  .finding .big{font-family:"Oswald";font-size:19px;color:var(--hazard);font-weight:600}
+  /* --- диаграмма метода --- */
+  .flow{display:flex;align-items:center;gap:10px;justify-content:space-between;margin:8px 0}
+  .flow .node{flex:1;text-align:center;background:var(--snow);border:1px solid var(--line);
+    border-radius:10px;padding:10px 8px}
+  .flow .node .t{font-family:"Oswald";font-size:15px;color:var(--rock2)}
+  .flow .node .d{font-size:12px;color:var(--muted)}
+  .flow .op{font-family:"Oswald";font-size:26px;color:var(--hazard);flex:0 0 auto}
+  footer{margin-top:18px;border-top:2px solid var(--line);padding-top:10px;
+    display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+  code{background:var(--snow);padding:1px 5px;border-radius:4px;font-size:13px}
+  @media print{body{background:#fff}.poster{width:auto}}
+</style>
+</head>
+<body>
+
+<div class="poster">
+  <header>
+    <div class="crest" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M4 54 L24 20 L34 36 L42 24 L60 54 Z" fill="#eef3f2"/>
+        <path d="M24 20 L30 30 L27 33 L24 28 L20 34 L16 30 Z" fill="#cfe0da"/>
+        <path d="M42 24 L47 32 L44 35 L42 31 L39 35 Z" fill="#cfe0da"/>
+        <path d="M4 54 L60 54" stroke="#c0392b" stroke-width="3"/>
+      </svg>
+    </div>
+    <div>
+      <div class="kicker">Республиканский конкурс научных проектов</div>
+      <h1>SelRisk-Almaty: оценка риска схода селей и оползней<br>в горах вокруг Алматы</h1>
+      <div class="sub">Двухуровневая модель на открытых данных: подверженность склонов
+        (где) × вероятность триггера (когда) → суточная карта риска для бассейнов
+        Заилийского Алатау.</div>
+      <div class="authors">Автор: [ФИО] · Научный руководитель: [ФИО] · [Учебное заведение], 2026</div>
+    </div>
+  </header>
+
+  <div class="cols">
+    <!-- Колонка 1 -->
+    <div class="card">
+      <span class="kicker haz">Проблема</span>
+      <h2>Почему это важно</h2>
+      <p>Алматы стоит на конусах выноса рек Заилийского Алатау. Катастрофические
+      сели <b>1921</b> (М. Алматинка), <b>1963</b> (прорыв оз. Иссык) и <b>1973</b>
+      (остановлен плотиной Медеу) уносили жизни и разрушали инфраструктуру.</p>
+      <p>Деградация оледенения увеличивает число и объём моренно-подпрудных озёр →
+      растёт угроза прорывных селей (GLOF). Нужна <b>количественная,
+      воспроизводимая</b> оценка риска на открытых данных.</p>
+      <h3>Цель</h3>
+      <p>Построить модель риска селей для бассейнов над Алматы и оценить вклад
+      гидрометеорологических и сейсмических факторов.</p>
+      <span class="kicker" style="margin-top:12px">Новизна</span>
+      <ul>
+        <li>Интеграция «где» и «когда» в единую карту риска для Алматы.</li>
+        <li>Открытый пайплайн с реальным каталогом землетрясений USGS.</li>
+        <li>Количественная проверка роли сейсмики.</li>
+      </ul>
+    </div>
+
+    <!-- Колонка 2 -->
+    <div class="card">
+      <span class="kicker">Метод</span>
+      <h2>Две модели → один риск</h2>
+      <div class="flow">
+        <div class="node"><div class="t">Подверженность</div><div class="d">Random Forest<br>рельеф, русла, озёра</div></div>
+        <div class="op">×</div>
+        <div class="node"><div class="t">Триггер</div><div class="d">бустинг + порог I–D<br>осадки, снег, сейсмика</div></div>
+        <div class="op">=</div>
+        <div class="node" style="background:#fdeee7;border-color:#e7c4b3"><div class="t" style="color:var(--hazard)">Риск</div><div class="d">суточная карта</div></div>
+      </div>
+      <h3>Данные (открытые)</h3>
+      <ul>
+        <li><b>USGS FDSN</b> — землетрясения (реальные).</li>
+        <li><b>Copernicus GLO-30</b> — реальная ЦМР → уклон, кривизна, TWI.</li>
+        <li><b>NASA COOLR</b> — каталог сходов; <b>ERA5-Land</b> — осадки/снег.</li>
+        <li>Инвентаризация моренных озёр.</li>
+      </ul>
+      <h3>Валидация</h3>
+      <p>Подверженность — <b>пространственная</b> кросс-валидация (без утечки по
+      автокорреляции). Триггер — <b>временной holdout</b> (обучение 2016–2019,
+      тест 2020–2023).</p>
+      <figure>
+        <img src="../../data/outputs/03_susceptibility.png" alt="Карта подверженности">
+        <figcaption>Карта подверженности склонов: максимум — на крутых склонах ниже моренных озёр.</figcaption>
+      </figure>
+    </div>
+
+    <!-- Колонка 3 -->
+    <div class="card">
+      <span class="kicker gold">Результаты</span>
+      <h2>Метрики</h2>
+      <div class="metrics">
+        <div class="metric"><b>0.81</b><span>ROC-AUC<br>подверженность</span></div>
+        <div class="metric"><b>0.91</b><span>ROC-AUC<br>триггер</span></div>
+        <div class="metric"><b>0.89</b><span>recall<br>порог I–D</span></div>
+        <div class="metric"><b>8&nbsp;лет</b><span>реальные<br>ERA5-Land</span></div>
+      </div>
+      <p style="font-size:12.5px;color:var(--muted);margin-top:2px">
+        Реальные данные: рельеф GLO-30 + осадки ERA5-Land 2016–2023; среднее ± СКО
+        по 8 seed (триггер 0.91 ± 0.08). AP триггера ≈ 0.18 — низкий из-за редкости
+        событий (~0.4 % дней, в тесте всего 7).</p>
+      <figure>
+        <img src="../../data/outputs/07_id_threshold.png" alt="Порог интенсивность-длительность">
+        <figcaption>Порог I = 10.3·D<sup>−0.18</sup>: триггерные дожди (красные) выше линии.</figcaption>
+      </figure>
+      <div class="card finding" style="margin-top:12px;padding:12px 14px">
+        <span class="kicker haz">Ключевой вывод</span>
+        <p class="big">Сейсмика — вторичный триггер.</p>
+        <p>Абляция на реальных данных: убрать осадки — AP падает в 26 раз, убрать
+        сейсмику — ROC-AUC не снижается. В важности признаков лидируют дождь за
+        3 дня и увлажнённость грунта, сейсмика = 0. Как и в природе селей Алматы
+        (GLOF + ливни).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- нижний ряд: пример + важности -->
+  <div class="cols" style="margin-top:20px">
+    <div class="card span2">
+      <span class="kicker wat">Пример применения</span>
+      <h2>Обложной весенний дождь — 25.04.2019</h2>
+      <p>По реальным данным ERA5: 50–52 мм за 3 дня на насыщенный грунт — сработали
+      <b>все три бассейна</b>. Максимальный риск (до <b style="color:var(--hazard)">0.98</b>)
+      — в зонах формирования на крутых склонах ниже моренных озёр; долины и
+      водоразделы — низкий риск.</p>
+      <figure>
+        <img src="../../data/outputs/09_risk_map_peakday.png" alt="Карта риска 25.04.2019">
+        <figcaption>Итоговая карта риска = подверженность × вероятность триггера.
+        Красное — очаги формирования селей во всех трёх бассейнах.</figcaption>
+      </figure>
+    </div>
+    <div class="card">
+      <span class="kicker">Вклад факторов · абляция</span>
+      <h2>Что запускает сель</h2>
+      <figure>
+        <img src="../../data/outputs/12_ablation_trigger.png" alt="Абляция признаков триггера">
+        <figcaption>Абляция (реальные данные): без осадков AP 0.29→0.011,
+        без сейсмики ROC-AUC 0.94→0.96.</figcaption>
+      </figure>
+      <h3>Сайт-калькулятор</h3>
+      <p style="font-size:14px">Вероятность схода селя (%) по погоде, архиву
+      2016–2023 и живому прогнозу:<br><b>https://dulattastanbay-dev.github.io/selrisk-almaty/</b></p>
+      <h3>Ограничения</h3>
+      <ul>
+        <li>Рельеф и сейсмика реальные; метки сходов демо (физически обоснованы) — заменяются инвентаризацией.</li>
+        <li>Координаты озёр и часть дат приблизительны.</li>
+        <li>Бассейны — по центроиду; далее — по водоразделам ЦМР.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <span>Пайплайн: <code>python scripts/run_all.py</code> · сайт: <code>https://dulattastanbay-dev.github.io/selrisk-almaty/</code></span>
+    <span>Данные: USGS FDSN · ERA5-Land (Copernicus) · Copernicus GLO-30 · Открытый код (MIT)</span>
+  </footer>
+</div>
+
+</body>
+</html>

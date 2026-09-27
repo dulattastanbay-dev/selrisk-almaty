@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Данные и артефакты (генерируются пайплайном)
+data/raw/*
+data/processed/*
+data/sample/*
+data/outputs/*
+data/models/*
+!data/**/.gitkeep
+# графики нужны постеру и слайдам (docs/) на GitHub Pages
+!data/outputs/*.png
+
+# Курируемые вручную данные — сохраняем в репозитории
+!data/events/historical_events.csv
+!data/events/glacial_lakes.csv
+
+# Резервная копия результатов до исправления агрегации ERA5
+backup_before_era5_fix/
+
+# ОС
+.DS_Store
+Thumbs.db

@@ -1,0 +1,104 @@
+# ============================================================================
+#  SelRisk-Almaty — конфигурация проекта
+#  Оценка риска схода селей и оползней в бассейнах над Алматы
+#  по гидрометеорологическим и сейсмическим данным.
+# ============================================================================
+
+project:
+  name: SelRisk-Almaty
+  crs: EPSG:4326          # координаты — широта/долгота
+  random_seed: 42
+
+# --- Область исследования: Заилийский Алатау над Алматы ---------------------
+aoi:
+  # Ограничивающий прямоугольник (bbox), примерно покрывающий селеопасные
+  # бассейны южнее города. lon_min, lat_min, lon_max, lat_max
+  bbox: [76.70, 43.00, 77.35, 43.28]
+  grid_res_deg: 0.004      # ~ 400 м по широте; шаг регулярной сетки ячеек
+
+# Основные селеопасные бассейны (реки, стекающие к Алматы).
+# Координаты — приблизительные центроиды верховьев (для назначения ячеек).
+basins:
+  - {name: "Малая Алматинка",   lon: 77.08, lat: 43.10, outlet_elev_m: 1500}
+  - {name: "Большая Алматинка", lon: 76.98, lat: 43.08, outlet_elev_m: 1500}
+  - {name: "Талгар",            lon: 77.25, lat: 43.10, outlet_elev_m: 1400}
+
+# --- Источники открытых данных ---------------------------------------------
+data_sources:
+  earthquakes:
+    provider: "USGS FDSN Event API"
+    url: "https://earthquake.usgs.gov/fdsnws/event/1/query"
+    min_magnitude: 3.0
+    radius_km: 150           # радиус вокруг центра AOI для отбора событий
+    start: "2000-01-01"
+    end: "2023-12-31"
+  weather:
+    provider: "ERA5-Land daily (Copernicus CDS)"
+    dataset: "reanalysis-era5-land"
+    note: "Реальные данные скачаны за 2016–2023 (scripts/fetch_era5.py); см. era5.py"
+    start: "2016-01-01"
+    end: "2023-12-31"
+  dem:
+    provider: "Copernicus GLO-30 DEM / SRTM 1 arc-sec"
+    note: "Скачивается отдельно; при отсутствии используется синтетический рельеф"
+  glacial_lakes:
+    provider: "Инвентаризация (шаблон, координаты приблизительные — заменить на GLIMS/ICIMOD)"
+
+# --- Параметры моделей ------------------------------------------------------
+models:
+  susceptibility:
+    algo: random_forest
+    n_estimators: 300
+    max_depth: 12
+    min_samples_leaf: 8
+    n_spatial_folds: 5        # блочная (пространственная) кросс-валидация
+    features:
+      - elevation
+      - slope_deg
+      - aspect_sin
+      - aspect_cos
+      - plan_curv
+      - prof_curv
+      - twi
+      - dist_drainage_m
+      - dist_lake_m
+      - upstream_lake_area_km2
+      - lithology_erodibility
+
+  triggering:
+    algo: gradient_boosting
+    test_start: "2020-01-01"   # временной holdout: обучение 2016–2019, тест 2020–2023
+    api_decay: 0.90            # коэффициент затухания antecedent precipitation index
+    melt_base_temp_c: 0.0      # база для расчёта положительных градусо-дней
+    features:
+      - rain_1d
+      - rain_3d
+      - rain_7d
+      - api
+      - pdd_3d
+      - snowmelt_mm
+      - swe_mm
+      - eq_max_mag_3d
+      - eq_energy_7d
+      - doy_sin
+      - doy_cos
+
+  id_threshold:
+    # Порог "интенсивность–длительность" осадков (Caine, 1980; Guzzetti, 2008)
+    # I = a * D^(-b);  подбор нижней огибающей триггерных дождевых событий
+    wet_day_min_mm: 1.0        # порог "дождливого" дня для выделения событий
+
+# --- Классы риска для итоговой карты ----------------------------------------
+risk_classes:
+  - {name: "низкий",     max: 0.15, color: "#2c7fb8"}
+  - {name: "умеренный",  max: 0.40, color: "#7fcdbb"}
+  - {name: "высокий",    max: 0.70, color: "#fecc5c"}
+  - {name: "экстремальный", max: 1.01, color: "#e31a1c"}
+
+paths:
+  raw: data/raw
+  processed: data/processed
+  events: data/events
+  sample: data/sample
+  outputs: data/outputs
+  models: data/models
