@@ -15,6 +15,9 @@ data/models/*
 !data/**/.gitkeep
 # графики нужны постеру и слайдам (docs/) на GitHub Pages
 !data/outputs/*.png
+# данные для Streamlit-демо в Streamlit Community Cloud (обновлять после run_all.py)
+!data/outputs/grid_with_susceptibility.csv
+!data/outputs/meteo_with_trigger.csv
 
 # Курируемые вручную данные — сохраняем в репозитории
 !data/events/historical_events.csv

@@ -206,7 +206,8 @@ with st.sidebar:
     default = presets[choice] or pd.Timestamp("2017-06-15").date()
     date = st.date_input("Дата", value=default, min_value=dmin, max_value=dmax, format="DD.MM.YYYY")
     st.caption("Погода — реальный реанализ ERA5-Land по каждому бассейну. Свои значения "
-               "можно ввести на сайте-калькуляторе (папка web/).")
+               "и живой прогноз — на [сайте-калькуляторе]"
+               "(https://dulattastanbay-dev.github.io/selrisk-almaty/).")
 
 date = pd.Timestamp(date)
 day = meteo[meteo["date"] == date].set_index("basin").reindex(BASINS)

@@ -44,6 +44,16 @@ python scripts/predict.py --date 2015-07-23   # оценка риска на д�
 streamlit run app/streamlit_app.py
 ```
 
+**Публикация демо в Streamlit Community Cloud** (бесплатно):
+1. Войти на [share.streamlit.io](https://share.streamlit.io) через GitHub.
+2. *Create app* → *Deploy a public app from GitHub*: репозиторий
+   `dulattastanbay-dev/selrisk-almaty`, ветка `main`, файл `app/streamlit_app.py`,
+   адрес, например, `selrisk-almaty`.
+3. *Deploy*. Зависимости берутся из `app/requirements.txt`, данные — из
+   `data/outputs/*.csv` в репозитории; откалиброванная модель обучается при старте
+   (секунды). После `run_all.py` закоммитьте обновлённые CSV — приложение
+   пересоберётся само.
+
 Подгрузить реальный каталог землетрясений USGS (открытый API, без ключа):
 
 ```bash
