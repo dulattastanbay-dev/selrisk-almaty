@@ -365,7 +365,9 @@
       const s = A.basins[b];
       const f = SR.seriesFeatures({ start, precip: s.precip, tmean: s.tmean, swe: s.swe, eqMax, eqEnergy }, M);
       feats.push(f);
-      preds.push(f.map((fi) => SR.predict(M, fi, bi)));
+      // процент — эталонный из Python (как в Streamlit); расчёт в JS по округлённому
+      // архиву совпадает с ним до 0,05 п.п. (tests/web_parity.js) и даёт вклад факторов
+      preds.push(f.map((fi, i) => Object.assign(SR.predict(M, fi, bi), { p: s.p_py[i] })));
       events.push(new Set(s.events));
     });
     arc = { start, n: A.n, feats, preds, events, idx: null };

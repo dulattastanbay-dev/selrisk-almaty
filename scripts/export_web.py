@@ -2,12 +2,11 @@
 
     python scripts/export_web.py        # после run_all.py
 
-Для сайта обучается отдельная откалиброванная модель триггера — логистическая
-регрессия без перевзвешивания классов. Причина: бустинг из train.py обучен с
-balanced-весами и почти запоминает дни событий (на них ≈1.0, на прочих ≈0), и
-на произвольных значениях, введённых пользователем, его выход нельзя читать
-как «процент». Логрег даёт гладкую, монотонную и калиброванную суточную
-вероятность и точно переносится в JavaScript (коэффициенты + нормировка).
+Сайт показывает откалиброванную вероятность триггера — логистическую регрессию
+из selrisk.models.triggering.train_calibrated_trigger (та же модель, что в
+Streamlit-демо). Она гладкая, монотонная и точно переносится в JavaScript
+(коэффициенты + нормировка); параметры и уровни — в config.yaml
+(models.calibrated_trigger).
 
 Пишет web/data/selrisk_data.js  (window.SELRISK_DATA = {...}).
 """
@@ -24,31 +23,13 @@ for _s in (sys.stdout, sys.stderr):          # корректный вывод �
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
 
 from selrisk.aoi import aoi_center, basins, haversine_km
 from selrisk.config import PROJECT_ROOT, load_config
 from selrisk.data_ingest.earthquakes import energy_from_magnitude
+from selrisk.models.triggering import predict_calibrated_trigger, train_calibrated_trigger
 
-C_REG = 0.3            # сила L2-регуляризации (подобрана на holdout 2020–2023)
 ERA5_RES = 0.1         # шаг сетки ERA5-Land, градусы
-
-# Суточные уровни опасности по откалиброванной вероятности (средний день ≈ 0.4 %)
-LEVELS = [
-    {"name": "низкий", "max": 0.01, "color": "#2e9d5b"},
-    {"name": "умеренный", "max": 0.05, "color": "#d4a106"},
-    {"name": "высокий", "max": 0.20, "color": "#ea6a1f"},
-    {"name": "экстремальный", "max": 1.01, "color": "#cf1f2e"},
-]
-
-
-def _fit(df: pd.DataFrame, cols: list[str]):
-    clf = make_pipeline(StandardScaler(), LogisticRegression(C=C_REG, max_iter=5000))
-    clf.fit(df[cols].to_numpy(), df["event"].to_numpy())
-    return clf
 
 
 def era5_points() -> dict[str, list[list[float]]]:
@@ -67,61 +48,44 @@ def era5_points() -> dict[str, list[list[float]]]:
 def main() -> None:
     cfg = load_config()
     trg = cfg["models"]["triggering"]
+    cal_cfg = cfg["models"]["calibrated_trigger"]
     odir = cfg.path("outputs")
     meteo = pd.read_csv(odir / "meteo_with_trigger.csv", parse_dates=["date"])
     grid = pd.read_csv(odir / "grid_with_susceptibility.csv")
-
     names = list(basins()["name"])
-    for b in names:
-        meteo[f"is_{b}"] = (meteo["basin"] == b).astype(float)
-    feats = list(trg["features"]) + [f"is_{b}" for b in names[1:]]   # первый бассейн — опорный
 
-    # --- проверка на временном holdout (как в train.py) ---
-    ts = pd.Timestamp(trg["test_start"])
-    tr, te = meteo[meteo["date"] < ts], meteo[meteo["date"] >= ts]
-    p_te = _fit(tr, feats).predict_proba(te[feats].to_numpy())[:, 1]
-    y_te = te["event"].to_numpy()
-    metrics = {
-        "holdout_roc_auc": float(roc_auc_score(y_te, p_te)),
-        "holdout_ap": float(average_precision_score(y_te, p_te)),
-        "holdout_brier": float(brier_score_loss(y_te, p_te)),
-        "holdout_expected_events": float(p_te.sum()),
-        "holdout_events": int(y_te.sum()),
-    }
-    if "trigger_prob_true" in te:
-        metrics["corr_with_true_prob"] = float(np.corrcoef(p_te, te["trigger_prob_true"])[0, 1])
+    # --- откалиброванная модель: holdout 2020–2023 + финальная на всём периоде ---
+    cal = train_calibrated_trigger(meteo)
+    metrics = cal["metrics"]
     print("[export_web] holdout 2020–2023: " + ", ".join(f"{k}={v:.4g}" for k, v in metrics.items()))
-
-    # --- финальная модель на всём периоде ---
-    clf = _fit(meteo, feats)
-    sc, lr = clf[0], clf[-1]
-    p_all = clf.predict_proba(meteo[feats].to_numpy())[:, 1]
+    sc, lr = cal["model"][0], cal["model"][-1]
+    p_all = predict_calibrated_trigger(cal, meteo)
     meteo["p_web"] = p_all
-    uppers = [lv["max"] for lv in LEVELS]
-    share = np.bincount(np.digitize(p_all, uppers[:-1]), minlength=len(LEVELS)) / len(p_all)
+    levels = cal_cfg["levels"]
+    share = np.bincount(np.digitize(p_all, [lv["max"] for lv in levels][:-1]),
+                        minlength=len(levels)) / len(p_all)
     print("[export_web] доля дней по уровням: "
-          + ", ".join(f"{lv['name']}={s:.1%}" for lv, s in zip(LEVELS, share)))
+          + ", ".join(f"{lv['name']}={s:.1%}" for lv, s in zip(levels, share)))
 
-    raw = meteo[trg["features"]]
     model = {
-        "features": feats,
-        "raw_features": list(trg["features"]),
+        "features": cal["features"],
+        "raw_features": cal["raw_features"],
         "basins": names,
         "mean": sc.mean_.tolist(),
         "scale": sc.scale_.tolist(),
         "coef": lr.coef_[0].tolist(),
         "intercept": float(lr.intercept_[0]),
-        "clip_min": raw.min().round(4).tolist(),
-        "clip_max": raw.max().round(4).tolist(),
+        "clip_min": np.round(cal["clip_min"], 4).tolist(),
+        "clip_max": np.round(cal["clip_max"], 4).tolist(),
         "api_decay": trg["api_decay"],
         "melt_base_temp_c": trg["melt_base_temp_c"],
-        "base_rate": float(meteo["event"].mean()),
+        "base_rate": cal["base_rate"],
         "n_events": int(meteo["event"].sum()),
         "n_days": int(meteo["date"].nunique()),
         "period": [str(meteo["date"].min().date()), str(meteo["date"].max().date())],
-        "levels": LEVELS,
+        "levels": levels,
         "level_share": share.round(4).tolist(),
-        "C": C_REG,
+        "C": cal_cfg["C"],
         "metrics": metrics,
     }
 

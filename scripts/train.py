@@ -19,7 +19,9 @@ from selrisk.models.susceptibility import predict_susceptibility, train_suscepti
 from selrisk.models.triggering import (
     build_rainfall_events,
     fit_id_threshold,
+    predict_calibrated_trigger,
     predict_trigger_prob,
+    train_calibrated_trigger,
     train_triggering,
 )
 
@@ -53,6 +55,14 @@ def main() -> None:
     print(f"[train] триггер: holdout ROC-AUC={trg['test_auc']:.3f}, AP={trg['test_ap']:.3f}, "
           f"событий всего={trg['n_events_total']} (в тесте={trg['n_events_test']})")
 
+    # --- Откалиброванная вероятность (сайт и Streamlit показывают её в %) ---
+    cal = train_calibrated_trigger(meteo)
+    meteo["trigger_prob_cal"] = predict_calibrated_trigger(cal, meteo)
+    cm = cal["metrics"]
+    print(f"[train] калибр. триггер: holdout ROC-AUC={cm['holdout_roc_auc']:.3f}, "
+          f"AP={cm['holdout_ap']:.3f}, ожидалось событий {cm['holdout_expected_events']:.1f} "
+          f"при {cm['holdout_events']} фактических")
+
     # --- Порог интенсивность–длительность ---
     events = build_rainfall_events(meteo)
     idt = fit_id_threshold(events)
@@ -65,6 +75,7 @@ def main() -> None:
     joblib.dump(trg, mdir / "triggering_result.joblib")
     joblib.dump(susc["model"], mdir / "susceptibility_model.joblib")
     joblib.dump(trg["model_all"], mdir / "triggering_model.joblib")
+    joblib.dump(cal, mdir / "trigger_calibrated.joblib")
 
     odir = cfg.path("outputs")
     grid.to_csv(odir / "grid_with_susceptibility.csv", index=False)
@@ -87,6 +98,7 @@ def main() -> None:
             "n_events_total": trg["n_events_total"],
             "n_events_test": trg["n_events_test"],
         },
+        "trigger_calibrated": cal["metrics"],
         "id_threshold": idt,
     }
     with open(odir / "metrics.json", "w", encoding="utf-8") as fh:

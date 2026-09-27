@@ -6,9 +6,15 @@ import pytest
 from selrisk.aoi import make_grid, assign_basin
 from selrisk.dataset import build_terrain_grid, generate_meteo, make_susceptibility_training
 from selrisk.features import add_antecedent_features
-from selrisk.models.fusion import classify_risk, daily_risk
+from selrisk.models.fusion import classify_risk, daily_risk, trigger_level
 from selrisk.models.susceptibility import train_susceptibility
-from selrisk.models.triggering import build_rainfall_events, fit_id_threshold
+from selrisk.models.triggering import (
+    build_rainfall_events,
+    fit_id_threshold,
+    predict_calibrated_trigger,
+    train_calibrated_trigger,
+    trigger_contributions,
+)
 
 
 @pytest.fixture(scope="module")
@@ -80,3 +86,24 @@ def test_id_threshold_and_fusion(grid):
     date = meteo["date"].iloc[100]
     risk = daily_risk(grid2, meteo, date)
     assert (risk["risk"] >= 0).all() and (risk["risk"] <= 1).all()
+
+
+def test_calibrated_trigger(grid):
+    meteo = generate_meteo(grid, seed=1, save=False)
+    res = train_calibrated_trigger(meteo)
+    p = predict_calibrated_trigger(res, meteo)
+    assert ((p >= 0) & (p <= 1)).all()
+    # логрег без взвешивания калиброван «в среднем»: сумма вероятностей ≈ число событий
+    assert abs(p.sum() - meteo["event"].sum()) < 1.0
+    # вклады групп в сумме с опорным логитом дают ту же вероятность
+    lr = res["model"][-1]
+    logit = lr.intercept_[0] + trigger_contributions(res, meteo.head(50)).sum(axis=1)
+    assert np.allclose(1 / (1 + np.exp(-logit)), p[:50])
+    # значения выше наблюдавшихся не экстраполируются
+    cols = ["rain_1d", "rain_3d", "rain_7d", "api"]
+    wet, at_max = meteo.head(1).copy(), meteo.head(1).copy()
+    wet[cols] = 1e4
+    for f in cols:
+        at_max[f] = res["clip_max"][res["raw_features"].index(f)]
+    assert np.isclose(predict_calibrated_trigger(res, wet)[0], predict_calibrated_trigger(res, at_max)[0])
+    assert list(trigger_level([0.001, 0.02, 0.1, 0.5])) == ["низкий", "умеренный", "высокий", "экстремальный"]

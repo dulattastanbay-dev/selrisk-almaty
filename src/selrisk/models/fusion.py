@@ -24,6 +24,15 @@ def risk_color_map() -> dict[str, str]:
     return {c["name"]: c["color"] for c in load_config()["risk_classes"]}
 
 
+def trigger_level(prob) -> np.ndarray:
+    """Уровень опасности по откалиброванной суточной вероятности схода в бассейне
+    (пороги models.calibrated_trigger.levels: 1 / 5 / 20 %)."""
+    levels = load_config()["models"]["calibrated_trigger"]["levels"]
+    names = np.array([lv["name"] for lv in levels])
+    idx = np.digitize(np.asarray(prob), [lv["max"] for lv in levels][:-1])
+    return names[np.clip(idx, 0, len(names) - 1)]
+
+
 def trigger_prob_on_date(meteo_pred: pd.DataFrame, date) -> dict[str, float]:
     """Словарь {бассейн: вероятность триггера} на заданную дату."""
     d = meteo_pred[meteo_pred["date"] == pd.Timestamp(date)]

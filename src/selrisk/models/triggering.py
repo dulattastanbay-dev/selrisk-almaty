@@ -1,11 +1,13 @@
 """Триггерная модель (triggering): при каких условиях сход происходит.
 
-Два подхода:
+Три подхода:
   1. Порог «интенсивность–длительность» осадков (Caine 1980; Guzzetti 2008) —
      классический интерпретируемый метод, нижняя огибающая триггерных дождей.
   2. Градиентный бустинг по гидрометеорологическим и сейсмическим признакам —
      суточная вероятность триггера. Оценка на временном holdout (обучение на
      ранних годах, тест на поздних) — без утечки во времени.
+  3. Откалиброванная логистическая регрессия — вероятность схода за сутки,
+     которую можно показывать пользователю в процентах (сайт и Streamlit).
 """
 from __future__ import annotations
 
@@ -13,12 +15,16 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.inspection import permutation_importance
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     average_precision_score,
+    brier_score_loss,
     confusion_matrix,
     precision_recall_curve,
     roc_auc_score,
 )
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.utils.class_weight import compute_sample_weight
 
 from ..config import load_config
@@ -153,3 +159,95 @@ def train_triggering(meteo: pd.DataFrame, seed: int | None = None,
 
 def predict_trigger_prob(model, meteo_feat: pd.DataFrame, features: list[str]) -> np.ndarray:
     return model.predict_proba(meteo_feat[features].to_numpy())[:, 1]
+
+
+# --- 3. Откалиброванная вероятность (для показа в процентах) ----------------
+# Группы признаков для объяснения прогноза («что влияет»); индикаторы бассейна
+# собираются в отдельную группу в trigger_contributions().
+TRIGGER_GROUPS = {
+    "Осадки за 1–7 дней": ["rain_1d", "rain_3d", "rain_7d"],
+    "Увлажнённость грунта": ["api"],
+    "Снег и его таяние": ["pdd_3d", "snowmelt_mm", "swe_mm"],
+    "Землетрясения": ["eq_max_mag_3d", "eq_energy_7d"],
+    "Время года": ["doy_sin", "doy_cos"],
+}
+
+
+def calibrated_features(meteo: pd.DataFrame) -> pd.DataFrame:
+    """Признаки триггера + индикаторы бассейна (первый бассейн из config — опорный)."""
+    cfg = load_config()
+    X = meteo[cfg["models"]["triggering"]["features"]].astype(float).copy()
+    for b in [b["name"] for b in cfg["basins"]][1:]:
+        X[f"is_{b}"] = (meteo["basin"] == b).astype(float)
+    return X
+
+
+def train_calibrated_trigger(meteo: pd.DataFrame) -> dict:
+    """Логистическая регрессия без взвешивания классов — калиброванная вероятность.
+
+    Бустинг (train_triggering) обучен с balanced-весами и почти запоминает дни
+    событий (≈1 на них и ≈0 на прочих), поэтому его выход нельзя показывать как
+    «процент». Здесь — проверка на том же временном holdout и финальная модель
+    на всём периоде. Возвращает модель, диапазоны признаков и метрики holdout.
+    """
+    cfg = load_config()
+    trg = cfg["models"]["triggering"]
+    C = cfg["models"]["calibrated_trigger"]["C"]
+    df = meteo.dropna(subset=trg["features"] + ["event"]).copy()
+    df["date"] = pd.to_datetime(df["date"])
+    X = calibrated_features(df)
+    y = df["event"].to_numpy()
+
+    def fit(mask):
+        clf = make_pipeline(StandardScaler(), LogisticRegression(C=C, max_iter=5000))
+        return clf.fit(X[mask].to_numpy(), y[mask])
+
+    test = (df["date"] >= pd.Timestamp(trg["test_start"])).to_numpy()
+    p_te = fit(~test).predict_proba(X[test].to_numpy())[:, 1]
+    y_te = y[test]
+    metrics = {
+        "holdout_roc_auc": float(roc_auc_score(y_te, p_te)),
+        "holdout_ap": float(average_precision_score(y_te, p_te)),
+        "holdout_brier": float(brier_score_loss(y_te, p_te)),
+        "holdout_expected_events": float(p_te.sum()),
+        "holdout_events": int(y_te.sum()),
+    }
+    if "trigger_prob_true" in df:
+        metrics["corr_with_true_prob"] = float(np.corrcoef(p_te, df.loc[test, "trigger_prob_true"])[0, 1])
+
+    raw = df[trg["features"]]
+    return {
+        "model": fit(np.ones(len(df), dtype=bool)),
+        "features": list(X.columns),
+        "raw_features": list(trg["features"]),
+        "clip_min": raw.min().to_numpy(),
+        "clip_max": raw.max().to_numpy(),
+        "base_rate": float(y.mean()),
+        "metrics": metrics,
+    }
+
+
+def _clipped_matrix(res: dict, meteo: pd.DataFrame) -> np.ndarray:
+    """Матрица признаков; значения вне диапазона обучения обрезаются (без экстраполяции)."""
+    X = calibrated_features(meteo)
+    n_raw = len(res["raw_features"])
+    X.iloc[:, :n_raw] = X.iloc[:, :n_raw].clip(res["clip_min"], res["clip_max"], axis=1)
+    return X.to_numpy()
+
+
+def predict_calibrated_trigger(res: dict, meteo: pd.DataFrame) -> np.ndarray:
+    """Суточная вероятность схода селя в бассейне (0..1) для строк meteo."""
+    return res["model"].predict_proba(_clipped_matrix(res, meteo))[:, 1]
+
+
+def trigger_contributions(res: dict, meteo: pd.DataFrame) -> pd.DataFrame:
+    """Вклад групп факторов в логит относительно дня со средними условиями.
+
+    exp(вклад) — во сколько раз группа меняет шансы схода. Строки — как в meteo.
+    """
+    sc, lr = res["model"][0], res["model"][-1]
+    c = pd.DataFrame((_clipped_matrix(res, meteo) - sc.mean_) / sc.scale_ * lr.coef_[0],
+                     columns=res["features"], index=meteo.index)
+    out = pd.DataFrame({g: c[f].sum(axis=1) for g, f in TRIGGER_GROUPS.items()})
+    out["Особенности бассейна"] = c[[f for f in res["features"] if f.startswith("is_")]].sum(axis=1)
+    return out

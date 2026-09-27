@@ -37,7 +37,8 @@ python scripts/run_all.py          # данные -> обучение -> оце�
 python scripts/predict.py --date 2015-07-23   # оценка риска на дату + карта
 ```
 
-Интерактивное демо (нужен `pip install streamlit`):
+Интерактивное демо (нужен `pip install streamlit`) — вероятность схода по дням
+2016–2023 в процентах, та же откалиброванная модель, что на сайте:
 
 ```bash
 streamlit run app/streamlit_app.py
@@ -69,12 +70,16 @@ python -m http.server 8000 --directory web             # открыть http://l
 достаточно выложить папку `web/` на любой статический хостинг (GitHub Pages,
 Netlify). Нужен интернет: карта, погода и сейсмика загружаются онлайн.
 
-Для сайта `export_web.py` обучает отдельную **откалиброванную логистическую
-регрессию** по тем же признакам (+ бассейн). Бустинг из `train.py` обучен с
-balanced-весами и почти запоминает дни событий (≈1.0 на них и ≈0 на прочих),
-поэтому его выход нельзя показывать как «процент». Логрег на holdout 2020–2023:
-ROC-AUC 0.98, ожидал 10.3 события при 7 фактических. Расчёт признаков в
-`web/model.js` совпадает с Python на всех 8766 днях (`tests/test_web_parity.py`).
+Проценты на сайте и в Streamlit-демо даёт **откалиброванная логистическая
+регрессия** по тем же признакам (+ бассейн): `train_calibrated_trigger()` в
+`src/selrisk/models/triggering.py`, параметры и уровни опасности — в
+`config.yaml` (`models.calibrated_trigger`). `train.py` сохраняет её в
+`data/models/trigger_calibrated.joblib` и пишет колонку `trigger_prob_cal`.
+Бустинг из `train.py` обучен с balanced-весами и почти запоминает дни событий
+(≈1.0 на них и ≈0 на прочих), поэтому его выход нельзя показывать как «процент»;
+он остаётся в научных экспериментах и картах `evaluate.py`. Логрег на holdout
+2020–2023: ROC-AUC 0.98, ожидал 10.3 события при 7 фактических. Расчёт признаков
+в `web/model.js` совпадает с Python на всех 8766 днях (`tests/test_web_parity.py`).
 
 ## Результаты (реальные данные: рельеф GLO-30 + осадки ERA5-Land 2016–2023)
 
@@ -146,7 +151,7 @@ selrisk-almaty/
 ├─ scripts/                     # 01_fetch_data, make_sample_data, train, evaluate,
 │                               # experiments, make_map, predict, run_all, export_web
 ├─ web/                         # сайт-калькулятор (index.html, app.js, model.js, data/)
-├─ app/streamlit_app.py         # интерактивное демо
+├─ app/streamlit_app.py         # интерактивное демо (откалиброванная вероятность, %)
 ├─ docs/map/risk_map.html       # интерактивная Leaflet-карта (генерируется)
 ├─ data/events/                 # курируемые: исторические сходы, озёра (в репозитории)
 ├─ docs/article/                # научная статья (IMRAD)
