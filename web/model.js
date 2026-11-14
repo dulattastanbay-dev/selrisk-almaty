@@ -16,7 +16,7 @@
     const doy=(dt-Date.UTC(dt.getUTCFullYear(),0,1))/86400000;
     return {day_of_year_sin:Math.sin(2*Math.PI*doy/365.2425),day_of_year_cos:Math.cos(2*Math.PI*doy/365.2425)};
   }
-  function validateScenario(model,row){
+  function validateFeatureValues(model,row){
     for(const k of model.features){
       if(typeof row[k]!=="number"||!Number.isFinite(row[k]))throw Error("Заполните все признаки конечными числами");
       if((k.includes("precipitation")||k.includes("degree_days"))&&row[k]<0)throw Error("Осадки и градусо-дни не могут быть отрицательными");
@@ -32,8 +32,11 @@
     }
     if("temperature_min_lag2utc_c" in row && !(row.temperature_min_lag2utc_c<=row.temperature_mean_lag2utc_c&&row.temperature_mean_lag2utc_c<=row.temperature_max_lag2utc_c))
       throw Error("Температуры должны удовлетворять min ≤ mean ≤ max");
+  }
+  function validateScenario(model,row){
+    validateFeatureValues(model,row);
     return score(model,row);
   }
-  const api={score,season,validateScenario};root.SelRiskModel=api;
+  const api={score,season,validateScenario,validateFeatureValues};root.SelRiskModel=api;
   if(typeof module!=="undefined")module.exports=api;
 })(typeof globalThis!=="undefined"?globalThis:this);

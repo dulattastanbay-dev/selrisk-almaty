@@ -51,7 +51,7 @@ def test_spatial_prior_only_sourced_centers_and_normalized_weights():
     assert all(w > 0 for w in weights) and sum(weights) == pytest.approx(1)
 
 
-def test_map_js_weather_window_and_probability_allocation():
+def test_map_js_weather_window_and_two_model_fusion():
     script = r"""
 const assert=require('node:assert/strict');
 const api=require('./web/map-app.js');
@@ -63,28 +63,18 @@ assert.equal(r.precipitation_prev3d_mm,3);assert.equal(r.precipitation_prev7d_mm
 assert.equal(r.precipitation_prev14d_mm,14);assert.equal(r.positive_degree_days_prev7d,35);
 assert.throws(()=>api.featuresFromDaily({...daily,time:time.slice(1)},'2020-01-16'));
 assert.throws(()=>api.featuresFromDaily({...daily,precipitation_sum:Array(14).fill(null)},'2020-01-16'));
-assert.equal(api.localProbability(0,.5),0);assert.equal(api.localProbability(1,.5),1);
-const p=.2,a=api.localProbability(p,.3),b=api.localProbability(p,.7);
-assert.ok(Math.abs(1-(1-a)*(1-b)-p)<1e-12);
-assert.throws(()=>api.localProbability(NaN,.5));
+assert.equal(api.localRisk(0,.5),0);assert.equal(api.localRisk(1,.5),.5);
+assert.equal(api.localRisk(.2,.3),.06);
+assert.throws(()=>api.localRisk(NaN,.5));
+assert.throws(()=>api.featuresFromDaily({...daily,time:[...time.slice(0,5),'2020-01-05',...time.slice(6)]},'2020-01-16'));
 assert.notEqual(api.color(.000001),api.color(.01));
 console.log('map weather/probability checks passed');
 """
     subprocess.run(["node", "-e", script], cwd=ROOT, check=True, capture_output=True, text=True)
 
 
-def test_map_js_probability_matches_python():
-    artifact = json.loads((ROOT/"web/data/model_map300.json").read_text())
-    d, features, _ = load_regional("power")
-    scores, status = score_rows(artifact, d)
-    use = np.flatnonzero(status == "available")[::100]
-    payload = {"model": artifact, "rows": d.iloc[use][features].to_dict("records")}
-    script = """
-const api=require('./web/map-app.js'),fs=require('node:fs');
-const p=JSON.parse(fs.readFileSync(0,'utf8'));
-console.log(JSON.stringify(p.rows.map(r=>api.probability(p.model,r).value)));
-"""
-    run = subprocess.run(["node", "-e", script], input=json.dumps(payload),
-                         cwd=ROOT, capture_output=True, text=True, check=True)
-    expected = 1/(1+np.exp(-scores[use]))
-    np.testing.assert_allclose(json.loads(run.stdout), expected, atol=2e-12, rtol=0)
+def test_active_map_never_loads_legacy_logistic_or_frequency_prior():
+    script = (ROOT/"web/map-app.js").read_text()
+    assert "model_boosting.json" in script and "model_rf.json" in script
+    assert "trees.fuse(layer.spatialScore,current.p)" in script
+    assert "spatial_prior" not in script and "model_map300" not in script

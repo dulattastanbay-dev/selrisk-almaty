@@ -8,10 +8,10 @@
 </head>
 <body>
 <main class="map-app">
-  <div id="map" aria-label="Карта селевых очагов вокруг Алматы"></div>
+  <div id="map" aria-label="Карта модельной селевой опасности вокруг Алматы"></div>
   <header class="map-header">
     <a class="brand" href="index.html">СельРиск <span>Алматы</span></a>
-    <span class="map-subtitle">Карта модельной вероятности</span>
+    <span class="map-subtitle">Случайный лес × бустинг</span>
     <form id="date-form" class="date-controls">
       <button type="button" id="today">Сегодня</button>
       <button type="button" id="tomorrow">Завтра</button>
@@ -22,18 +22,18 @@
   <aside class="map-readout" aria-live="polite">
     <div id="day-label">Загрузка карты</div>
     <strong id="region-probability">—</strong>
-    <span>Условная оценка для региона за сутки</span>
+    <span>Погодный триггер · бустинг</span>
     <p id="status">Загружаем модель и географию…</p>
   </aside>
   <aside class="map-legend" aria-label="Цветовая шкала">
-    <b>Вероятность в очаге, %</b>
+    <b>Модельная оценка: лес × бустинг, %</b>
     <div class="color-ramp"></div>
-    <div class="legend-values"><span>0,0001</span><span>0,001</span><span>0,01</span><span>0,1</span><span>1+</span></div>
-    <p>Условная модель: 300 дней без записей приняты за бесселевые. Пространство: историческая частота очагов.</p>
+    <div class="legend-values"><span>0,0001</span><span>0,001</span><span>0,01</span><span>0,1</span><span>1</span><span>10+</span></div>
+    <p>Лес: реальный рельеф и известные очаги. Бустинг: реальная погода; 300 дней без записей приняты за бесселевые. Условный индекс, сетка 450 м.</p>
     <small id="weather-source">Погода: —</small>
   </aside>
   <button id="reset-map" class="reset-map" type="button" aria-label="Вернуть карту к Алматы">К Алматы</button>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="model.js"></script><script src="map-app.js"></script>
+<script src="model.js"></script><script src="tree-model.js"></script><script src="map-app.js"></script>
 </body></html>

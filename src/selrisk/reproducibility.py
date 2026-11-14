@@ -62,6 +62,35 @@ def compare_examples(expected, actual):
         raise AssertionError("Strict presentation metadata differs")
 
 
+def compare_tree_model(expected, actual):
+    left, right = deepcopy(expected), deepcopy(actual)
+    a, b = left.pop("trees"), right.pop("trees")
+    if left != right or len(a) != len(b):
+        raise AssertionError("Tree model metadata/ensemble size differs")
+    for ta, tb in zip(a, b):
+        x, y = np.asarray(ta, float), np.asarray(tb, float)
+        if x.shape != y.shape or not np.isfinite(x).all() or not np.isfinite(y).all():
+            raise AssertionError("Tree shape or finiteness differs")
+        np.testing.assert_array_equal(x[:, :3], y[:, :3])  # topology/features: exact
+        np.testing.assert_allclose(x[:, 3:], y[:, 3:], atol=ATOL, rtol=0)
+
+
+def compare_tree_report(expected, actual):
+    left, right = deepcopy(expected), deepcopy(actual)
+    metrics = ["proxy_average_precision", "proxy_roc_auc",
+               "catalogue_positive_capture_top_decile", "actual_selected_fraction"]
+    pairs = [(left["spatial"]["oof_origin_discrimination"],
+              right["spatial"]["oof_origin_discrimination"])]
+    pairs += [(left["temporal"]["evaluation"][s], right["temporal"]["evaluation"][s])
+              for s in ("validation", "test")]
+    for a, b in pairs:
+        for key in metrics:
+            np.testing.assert_allclose(a[key], b[key], atol=ATOL, rtol=0)
+            a[key] = b[key] = 0
+    if left != right:
+        raise AssertionError("Two-model report metadata differs")
+
+
 def verify_export():
     tracked=subprocess.check_output(["git","-C",str(ROOT),"ls-files","web/data"],text=True).splitlines()
     actual={p.relative_to(ROOT).as_posix() for p in (ROOT/"web/data").iterdir() if p.is_file()}
@@ -82,6 +111,12 @@ def verify_export():
             numerical.append(name)
         elif base == "presentation_examples.json":
             compare_examples(json.loads(reference),json.loads(current))
+            numerical.append(name)
+        elif base in {"model_rf.json", "model_boosting.json"}:
+            compare_tree_model(json.loads(reference),json.loads(current))
+            numerical.append(name)
+        elif base == "two_model_report.json":
+            compare_tree_report(json.loads(reference),json.loads(current))
             numerical.append(name)
         else:
             raise AssertionError(f"Strict data/report export differs: {name}")

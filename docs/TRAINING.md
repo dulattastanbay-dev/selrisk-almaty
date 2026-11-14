@@ -2,14 +2,32 @@
 
 Активный сайт теперь показывает только цветную карту, дату и сегодня/завтра.
 Для него после `run_all.py` выполните `python scripts/train_map.py`.
-Описание отдельного эксперимента с 300 условными нулевыми метками:
+Действующий `train_map.py` обучает и сохраняет **две модели: Random Forest
+и HistGradientBoosting**, на реальном рельефе, инвентаризации и погоде.
+Нативные файлы: `data/outputs/research/two_model_map/model_rf.joblib`
+и `model_boosting.joblib`; браузерные деревья: `web/data/model_rf.json`
+и `model_boosting.json`. Файлы `training_manifest.json`,
+`spatial_training_ledger.csv`, `two_model_report.json` фиксируют обучение.
+Можно указать `--output` и `--web-output`; CI сохраняет обе модели в
+артефакте `research-results-v02`. Перезагрузка:
+
+```python
+import joblib
+rf = joblib.load("data/outputs/research/two_model_map/model_rf.joblib")
+boosting = joblib.load("data/outputs/research/two_model_map/model_boosting.joblib")
+# predict_proba без повторного fit; порядок признаков указан в соответствующем JSON
+```
+
+Загружайте только доверенные joblib-файлы с совместимыми версиями библиотек.
+Спецификация, признаки, разметка и проверка обеих моделей:
 [MAP_MODEL.md](MAP_MODEL.md). Ниже сохранён протокол исходного исследования;
 его ранжирующие баллы и два примера не являются процентами новой карты.
 
-Основной маршрут работает на зафиксированном реальном датасете v0.2.
+Исследовательский маршрут ниже работает на зафиксированном реальном датасете v0.2.
 Он обучает региональное presence-background ранжирование, а не вероятность
 селя в конкретном ущелье. Сайт не обучает модель в браузере: читает сохранённый
-JSON со scaler и коэффициентами.
+JSON. У активной карты это два ансамбля деревьев, а у исследовательского
+Streamlit ниже остаются scaler и коэффициенты логистических моделей.
 
 ## Установка
 

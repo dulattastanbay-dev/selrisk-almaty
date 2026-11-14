@@ -1,4 +1,7 @@
-"""Experimental map model with explicitly assumed, not verified, negative days."""
+"""ARCHIVED map300 logistic experiment, not the active website model.
+
+The active real-data RF + HistGradientBoosting implementation is two_model_map.
+"""
 from __future__ import annotations
 import argparse
 import json
