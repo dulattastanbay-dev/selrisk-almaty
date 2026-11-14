@@ -49,7 +49,7 @@ ZIP распаковывается автоматически в игнорир�
 Статический сайт после экспорта:
 
 ```bash
-npx serve .
+npx serve . --config serve.json
 # открыть показанный локальный адрес, затем web/
 python scripts/predict.py --kind power --date 2015-07-23
 python scripts/predict.py --date 2030-01-01
