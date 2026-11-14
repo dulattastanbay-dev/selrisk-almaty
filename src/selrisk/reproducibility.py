@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import json
 import subprocess
+from copy import deepcopy
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -47,6 +48,20 @@ def compare_predictions(expected, actual):
             np.testing.assert_allclose(a,b,atol=ATOL,rtol=0,equal_nan=True,err_msg=key)
 
 
+def compare_examples(expected, actual):
+    left, right = deepcopy(expected), deepcopy(actual)
+    # Only derived scores/thresholds may have cross-CPU rounding differences.
+    for a, b in [(left, right)] + list(zip(left["cases"], right["cases"])):
+        for key in ("threshold", "score"):
+            if key in a:
+                if not np.isfinite([a[key], b[key]]).all():
+                    raise AssertionError("Nonfinite presentation score")
+                np.testing.assert_allclose(a[key], b[key], atol=ATOL, rtol=0)
+                a[key] = b[key] = 0
+    if left != right:
+        raise AssertionError("Strict presentation metadata differs")
+
+
 def verify_export():
     tracked=subprocess.check_output(["git","-C",str(ROOT),"ls-files","web/data"],text=True).splitlines()
     actual={p.relative_to(ROOT).as_posix() for p in (ROOT/"web/data").iterdir() if p.is_file()}
@@ -64,6 +79,9 @@ def verify_export():
             numerical.append(name)
         elif base in {"predictions_power.csv","predictions_stations.csv"}:
             compare_predictions(reference.decode(),current.decode())
+            numerical.append(name)
+        elif base == "presentation_examples.json":
+            compare_examples(json.loads(reference),json.loads(current))
             numerical.append(name)
         else:
             raise AssertionError(f"Strict data/report export differs: {name}")

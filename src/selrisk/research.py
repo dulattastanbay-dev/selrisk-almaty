@@ -144,6 +144,8 @@ def train_research(kind="power", output=OUTPUT):
                        for s,mask in masks.items()}
     output=Path(output); output.mkdir(parents=True,exist_ok=True)
     write_json(output/f"model_{kind}.json",artifact)
+    from .persistence import save_pipeline
+    save_pipeline(model, output, kind)
     d["retrospective_raw_score"]=scores
     ui_score,status=score_rows(artifact,d)
     d["research_score"]=ui_score; d["prediction_status"]=status

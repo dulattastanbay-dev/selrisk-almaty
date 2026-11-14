@@ -50,7 +50,7 @@ async function loadKind(){
     $("split-description").textContent=kind==="power"?"Train: 1981–2005 · validation: 2006–2012 · test: 2013–2020. Признаки используют D−2 UTC и ранее.":"Train: 1937–1973 · validation: 1974–1981 · test: 1982–1991. Последнее наблюдение в признаках: D−2.";
     for(const key of ["model","report"])$(key+"-download").href=`data/${key}_${kind}.json`;
     $("pred-download").href=`data/predictions_${kind}.csv`;
-    $("inspect").disabled=false;switchMode(mode);
+    $("inspect").disabled=false;document.querySelectorAll("[data-case-date]").forEach(b=>b.disabled=false);switchMode(mode);
   }catch(e){if(mine!==request)return;model=null;$("load-error").hidden=false;$("load-error").textContent=e.message;setResult({score:null,status:"no_data"},null,"Расчёт недоступен: не удалось загрузить данные. Старые значения не используются.");}
 }
 function svgEl(tag,attrs,text){const x=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))x.setAttribute(k,v);if(text)x.textContent=text;return x;}
@@ -76,6 +76,35 @@ function renderTable(){
   $("catalog-count").textContent=`Найдено записей: ${filtered.length} из ${events.length}`;
   $("page-count").textContent=`${pageNo+1} / ${n}`;$("prev").disabled=pageNo===0;$("next").disabled=pageNo>=n-1;
 }
+async function loadPresentation(){
+  try{
+    const data=await get("data/presentation_examples.json"),s=data.test_summary;
+    if(data.cases.length!==2)throw Error("Ожидались два проверенных примера");
+    $("case-summary").textContent=`Весь test POWER: ${s.positive_hits} из ${s.catalogue_positive_days} зарегистрированных дат выше порога; ${s.positive_not_selected} не выбраны (включая ${s.positive_withheld} без допустимого балла). Выбрано ${s.selected_days} из ${s.eligible_days} допустимых дней, из них ${s.selected_unknown_days} с неизвестным исходом. Это не доказанные ложные тревоги.`;
+    $("case-list").replaceChildren();
+    for(const c of data.cases){
+      const card=el("article");card.className="case-card";
+      card.append(el("div",`TEST · POWER · ${c.event_id}`),el("h3",c.date),el("p",`${c.basin} · ${c.center_name}`));
+      const score=el("p",`${c.score.toFixed(3)} ≥ ${c.threshold.toFixed(3)}`);score.className="case-score";
+      card.append(score,el("p","Балл выше validation-порога; на эту дату есть запись о селе."));
+      const meta=el("dl");
+      for(const [k,v]of [["Тип по каталогу",c.event_type],["Погода строго до",c.feature_window_end_utc],["Обучение завершено","2005-12-31"],["Исход","Зарегистрированное событие"]])meta.append(el("dt",k),el("dd",v));
+      const source=sourceLink(`${c.source_url}/${c.source_fid}?f=pjson`,`Каталог Reading · FID ${c.source_fid} ↗`);
+      const button=el("button","Открыть день в архиве");button.className="primary";button.dataset.caseDate=c.date;button.disabled=!model;
+      button.onclick=async()=>{
+        button.disabled=true;
+        try{
+          if($("dataset").value!=="power"||!model){$("dataset").value="power";await loadKind();}
+          if(!model||model.dataset_kind!=="power")throw Error("Не удалось загрузить POWER");
+          $("date").value=c.date;switchMode("archive");$("explore").scrollIntoView({behavior:"smooth"});
+        }catch(e){$("case-summary").textContent=e.message;}
+        finally{button.disabled=false;}
+      };
+      card.append(meta,source,button);$("case-list").append(card);
+    }
+  }catch(e){$("case-list").replaceChildren();$("case-summary").textContent=`Примеры недоступны: ${e.message}. Архив и каталог доступны отдельно.`;}
+}
+loadPresentation();
 $("dataset").addEventListener("change",loadKind);$("inspect").onclick=inspect;$("date").onchange=()=>{if(model)inspect();};
 document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>switchMode(b.dataset.mode));
 $("manual-panel").onsubmit=e=>{e.preventDefault();try{if(!model)throw Error("Модель недоступна");const row={date:$("scenario-date").value,...SelRiskModel.season($("scenario-date").value)};document.querySelectorAll("[data-feature]").forEach(x=>{row[x.dataset.feature]=x.value.trim()===""?NaN:Number(x.value);});setResult(SelRiskModel.validateScenario(model,row),row);}catch(err){setResult({score:null,status:"invalid"},null,err.message);}};

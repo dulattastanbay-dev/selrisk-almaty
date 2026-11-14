@@ -40,6 +40,12 @@ def export_web():
     events=verify_file(root,"data/event_catalogue.csv")
     shutil.copy2(events,out/"event_catalogue.csv")
     compact(out/"events.json",records(pd.read_csv(events)))
+    from .presentation import presentation_examples
+    examples = presentation_examples(
+        pd.read_csv(OUTPUT/"predictions_power.csv"),
+        json.loads((OUTPUT/"model_power.json").read_text(encoding="utf-8")),
+        pd.read_csv(events))
+    write_json(out/"presentation_examples.json", examples)
     shutil.copy2(verify_file(root,"data/mudflow_centers.geojson"),out/"centers.geojson")
     shutil.copy2(verify_file(root,"metadata/quality_report.json"),out/"quality_report.json")
     shutil.copy2(verify_file(root,"metadata/source_register.csv"),out/"source_register.csv")

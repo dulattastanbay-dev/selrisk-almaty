@@ -35,11 +35,13 @@ def entry(name, legacy):
         p=argparse.ArgumentParser(description="Historical regional score, not a probability")
         p.add_argument("--date",required=True)
         p.add_argument("--kind",choices=["power","stations"],default="power")
+        p.add_argument("--model",type=Path,help="Saved portable JSON model; inference only, no training")
         a=p.parse_args()
-        model=ROOT/f"web/data/model_{a.kind}.json"
+        model=a.model or ROOT/f"web/data/model_{a.kind}.json"
         if not model.exists():
             raise SystemExit("Run python scripts/run_all.py first")
         frame,_,_=load_regional(a.kind)
-        print(json.dumps(lookup_date(frame,json.loads(model.read_text()),a.date),ensure_ascii=False))
+        from .persistence import load_artifact
+        print(json.dumps(lookup_date(frame,load_artifact(model,a.kind),a.date),ensure_ascii=False))
     else:
         raise SystemExit("Legacy generator is disabled by default; use --demo intentionally.")

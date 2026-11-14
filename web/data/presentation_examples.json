@@ -1,0 +1,78 @@
+{
+  "version": "0.2",
+  "dataset_kind": "power",
+  "interpretation": "Retrospective threshold hits, NOT forecasts issued before the events.",
+  "selection": "First chronological test hits with exact catalogue dates, one per year; selected after test inspection.",
+  "threshold_rule": "90th percentile of eligible in-domain validation scores, inclusive >=; no test threshold tuning.",
+  "threshold": 1.7083155003000001,
+  "validation_threshold_days": 2342,
+  "test_summary": {
+    "eligible_days": 2614,
+    "catalogue_positive_days": 33,
+    "positive_hits": 11,
+    "positive_not_selected": 22,
+    "positive_withheld": 2,
+    "selected_days": 259,
+    "selected_unknown_days": 248,
+    "unavailable_days": 11
+  },
+  "cases": [
+    {
+      "date": "2013-06-06",
+      "split": "test",
+      "score": 1.82035308,
+      "threshold": 1.7083155003000001,
+      "threshold_exceeded": true,
+      "feature_window_end_utc": "2013-06-05T00:00:00Z",
+      "event_id": "READING_276",
+      "basin": "Ulken Almaty",
+      "center_name": "UA-2 (Kokshoky)",
+      "event_type": "Pluvial",
+      "source_url": "https://services1.arcgis.com/PhkL97KbkzUBf4PQ/arcgis/rest/services/Platform/FeatureServer/0",
+      "source_fid": 169,
+      "source_date": "06.06.2013",
+      "features": {
+        "precipitation_lag2utc_mm": 0.78,
+        "temperature_mean_lag2utc_c": 9.55,
+        "temperature_min_lag2utc_c": 3.82,
+        "temperature_max_lag2utc_c": 13.77,
+        "precipitation_prev3d_mm": 11.98,
+        "precipitation_prev7d_mm": 12.39,
+        "precipitation_prev14d_mm": 16.25,
+        "temperature_mean_prev7d_c": 10.71857143,
+        "positive_degree_days_prev7d": 75.03,
+        "day_of_year_sin": 0.44211873,
+        "day_of_year_cos": -0.89695654
+      }
+    },
+    {
+      "date": "2015-07-05",
+      "split": "test",
+      "score": 2.761759732,
+      "threshold": 1.7083155003000001,
+      "threshold_exceeded": true,
+      "feature_window_end_utc": "2015-07-04T00:00:00Z",
+      "event_id": "READING_103",
+      "basin": "Aksay",
+      "center_name": "A-1 (Akzhar)",
+      "event_type": "Pluvial",
+      "source_url": "https://services1.arcgis.com/PhkL97KbkzUBf4PQ/arcgis/rest/services/Platform/FeatureServer/0",
+      "source_fid": 469,
+      "source_date": "05.07.2015 ",
+      "features": {
+        "precipitation_lag2utc_mm": 0.11,
+        "temperature_mean_lag2utc_c": 17.3,
+        "temperature_min_lag2utc_c": 11.88,
+        "temperature_max_lag2utc_c": 23.35,
+        "precipitation_prev3d_mm": 0.27,
+        "precipitation_prev7d_mm": 2.16,
+        "precipitation_prev14d_mm": 21.91,
+        "temperature_mean_prev7d_c": 14.26285714,
+        "positive_degree_days_prev7d": 99.84,
+        "day_of_year_sin": -0.04090969,
+        "day_of_year_cos": -0.99916285
+      }
+    }
+  ],
+  "limitations": "Selected unknown days are NOT proven false alarms. Two selected hits do not measure accuracy; reanalysis availability and catalogue bias remain unvalidated."
+}
