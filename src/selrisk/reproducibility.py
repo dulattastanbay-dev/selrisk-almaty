@@ -74,7 +74,7 @@ def verify_export():
         if reference==current:
             exact.append(name);continue
         base=Path(name).name
-        if base in {"model_power.json","model_stations.json"}:
+        if base in {"model_power.json","model_stations.json","model_map300.json"}:
             compare_model(json.loads(reference),json.loads(current))
             numerical.append(name)
         elif base in {"predictions_power.csv","predictions_stations.csv"}:

@@ -1,26 +1,39 @@
 <!doctype html>
 <html lang="ru">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>СельРиск Алматы · исследование v0.2</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="cases.css"></head>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>СельРиск · карта Алматы</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="map.css">
+</head>
 <body>
-<header><a class="brand" href="index.html">СельРиск <span>Алматы</span></a><nav aria-label="Основная навигация"><a href="#explore">Архив</a><a href="#presentation">РКНП</a><a href="#geography">Карта и каталог</a><a href="#method">Метод</a><a href="#downloads">Данные ↗</a></nav><span class="badge">RESEARCH / V0.2</span></header>
-<main>
-<section class="hero"><div class="eyebrow">ЗАИЛИЙСКИЙ АЛАТАУ · ИССЛЕДОВАТЕЛЬСКИЙ ПРОТОТИП</div><h1>Реальные события.<br><span>Проверяемые ограничения.</span></h1><p class="lede">Исследуем связь погоды с зарегистрированными селями. Открытый каталог, исторические наблюдения и воспроизводимое ранжирование дней вместо недоказанных процентов вероятности.</p><p class="warning"><b>Не система оповещения.</b> Балл не показывает вероятность селя и не определяет безопасность маршрута. Руководствуйтесь сообщениями МЧС РК и Казселезащиты.</p></section>
-<div id="load-error" role="alert" hidden></div>
-<section class="stats" aria-label="Состав данных"><div><strong id="event-count">…</strong><span>записей в каталоге</span></div><div><strong id="positive-count">…</strong><span>известных дат в выборке</span></div><div><strong id="unknown-count">…</strong><span>дней с неизвестным исходом</span></div><div><strong>0</strong><span>подтверждённых отрицательных</span></div></section>
-<section id="explore"><div class="section-head"><div><div class="eyebrow">ИСТОРИЧЕСКИЙ ЭКСПЕРИМЕНТ</div><h2>Что модель видит в погоде</h2></div><label>Источник признаков<select id="dataset"><option value="power">NASA POWER · 1981–2020</option><option value="stations">NOAA: станции · 1937–1991</option></select></label></div>
-<div class="tabs" role="tablist" aria-label="Режим исследования"><button role="tab" id="tab-archive" aria-selected="true" data-mode="archive">Архив</button><button role="tab" id="tab-manual" aria-selected="false" data-mode="manual">Ручной сценарий</button><button role="tab" id="tab-live" aria-selected="false" data-mode="live">Сейчас и прогноз</button></div>
-<div class="explorer"><div class="input-panel">
-<div id="archive-panel"><label>Дата наблюдения<input id="date" type="date" value="2019-06-05"></label><p id="period-note" class="muted"></p><button id="inspect" class="primary">Посмотреть день</button></div>
-<form id="manual-panel" hidden><p class="muted">Учебный сценарий региональной модели, не прогноз для отдельного бассейна. Сезон рассчитывается по дате.</p><label>Дата сценария<input id="scenario-date" type="date" value="2015-07-23" required></label><div id="manual-fields"></div><button class="primary" type="submit">Рассчитать балл</button></form>
-<div id="live-panel" hidden><h3>Оперативный прогноз недоступен</h3><p>Реанализ не заменяет прогноз. Задержка публикации, местные осадки и оперативная проверка не подтверждены, поэтому актуальные проценты не рассчитываются.</p></div>
-</div><div class="result-panel" aria-live="polite"><div class="eyebrow" id="score-label">РЕГИОНАЛЬНЫЙ БАЛЛ РАНЖИРОВАНИЯ</div><strong id="score">…</strong><h3 id="score-state">Загрузка данных</h3><p id="score-note"></p><dl id="day-meta"></dl><p class="muted">Ноль на этой шкале не означает отсутствие опасности. Положительный балл не является сигналом тревоги; отрицательный не является разрешением на выход в горы.</p></div></div>
-<details><summary>Признаки выбранного дня</summary><div id="feature-values" class="feature-values"></div></details></section>
-<section id="presentation"><div class="section-head"><div><div class="eyebrow">РКНП · ДВА РЕТРОСПЕКТИВНЫХ ПРИМЕРА</div><h2>Событие попало выше порога</h2></div><a href="data/presentation_examples.json" download>Доказательства · JSON ↗</a></div><p>Две зарегистрированные даты из test POWER: модель обучена на 1981–2005 годах, порог зафиксирован по validation 2006–2012. Это совпадения при ретроспективной проверке, <b>не прогнозы, выпущенные до событий</b>. Примеры выбраны после просмотра test и не заменяют оценку всей выборки.</p><p id="case-summary" class="case-summary" role="status">Загружаем проверяемые примеры…</p><div id="case-list" class="case-grid"></div><details><summary>Как выбраны примеры и что сказать жюри</summary><p>Порог равен 90-му процентилю баллов допустимых validation-дней внутри обучающего диапазона. Превышение: балл ≥ порога. Берём первые по времени совпадения на test, не более одного на год; нужны точная дата и запись каталога. Порог не подбирается под эти два случая.</p><p>Корректная формулировка: «В отложенном периоде эти зарегистрированные даты получили балл выше фиксированного validation-порога». Модель региональная: название бассейна относится к записи каталога, а не к отдельному прогнозу для ущелья. Два примера не доказывают точность, вероятность или пригодность для оповещения.</p><p><a href="../docs/TRAINING.md">Как обучить, сохранить и загрузить модель ↗</a></p></details></section>
-<section id="geography"><div class="eyebrow">ГЕОГРАФИЯ И ПРОИСХОЖДЕНИЕ</div><h2>Наблюдения, а не карта вероятностей</h2><p>Полигоны показывают опубликованные селевые очаги, а не границы водосборов. Точки соответствуют координатам из каталога и не обладают точностью полевой съёмки; фильтры каталога применяются к точкам, но не меняют исходные полигоны.</p>
-<div class="map-wrap"><svg id="map" viewBox="0 0 1000 450" role="img" aria-label="Координатная схема зарегистрированных событий и селевых очагов"></svg><div id="map-detail" role="status">Нажмите на точку или очаг, чтобы увидеть исходную запись.</div></div><p class="muted">Зелёные контуры: селевые очаги Reading. Красные точки: отфильтрованные события. Серые координатные линии: градусы WGS84; это схема без подложки, не навигационная карта.</p>
-<div class="filters"><label>Страна<select id="country"><option value="">Все страны</option></select></label><label>Бассейн<select id="basin"><option value="">Все бассейны</option></select></label><label>Тип события<select id="event-type"><option value="">Все типы</option></select></label><label>Поиск<input id="search" type="search" placeholder="Дата, идентификатор, комментарий"></label></div><div class="catalog-head"><p id="catalog-count" aria-live="polite"></p><a href="data/event_catalogue.csv" download>Полный CSV каталога ↗</a></div><div class="table-wrap"><table><thead><tr><th>Запись / дата</th><th>Бассейн</th><th>Тип</th><th>Точность даты</th><th>Первоисточник</th></tr></thead><tbody id="events"></tbody></table></div><div class="pagination"><button id="prev">Назад</button><span id="page-count"></span><button id="next">Далее</button></div></section>
-<section id="method"><div class="eyebrow">МЕТОД И ВРЕМЕННАЯ ПРОВЕРКА</div><h2>Честная задача для неполной разметки</h2><div class="method-grid"><article><h3>01 / Событие или неизвестно</h3><p>Исходный target принимает только 1 или NULL. Отсутствие записи не считается доказательством отсутствия селя. Интервальные и конфликтующие даты не превращаются в точные события.</p></article><article><h3>02 / Presence-background</h3><p>Логистическая модель различает зарегистрированные даты и фоновые дни. Неопределённые интервалы и фон в пределах ±7 дней от события исключаются. Это простой исследовательский ориентир, не полноценная коррекция смещения PU-разметки.</p></article><article><h3>03 / Только прошлое</h3><p>Масштабирование обучено на train. C выбирается на validation, test не участвует в выборе. В начале следующих частей исключены 16 дней, чтобы разделить погодные окна. На всех годах модель не переобучается.</p></article></div><p id="split-description"></p><h3>Сравнение на отложенном периоде</h3><p>AP и AUC ниже относятся к различению «запись каталога / выбранный фон». Это не точность прогноза реальных селей. «Захват» означает долю зарегистрированных дат в верхней десятой части ранжирования, а не полноту обнаружения всех селей.</p><div class="table-wrap"><table><thead><tr><th>Модель</th><th>Proxy AP</th><th>Proxy AUC</th><th>Захват</th><th>Доля выбранных дней</th></tr></thead><tbody id="metrics"></tbody></table></div><p id="test-size" class="muted"></p><details open><summary>Что пока не доказано</summary><ul><li>Нет проверенных отрицательных исходов, оценки ложных тревог и калибровки вероятности.</li><li>Неизвестна полнота регистрации; модель может учить сезонность и особенности каталога.</li><li>Один ряд POWER не отражает ливни в каждом ущелье. Четыре повторения одной погоды не считаются независимыми наблюдениями.</li><li>Дождевые, ледниковые и прочие механизмы смешаны. Данные о GLOF хранятся отдельно и не подменяют каталог озёр.</li><li>Нет проверенных границ водосборов, отдельной валидации пространственной подверженности и оперативного внедрения.</li><li>За пределами обучающего диапазона балл скрывается. Неизвестные значения не заменяются нулями.</li></ul></details></section>
-<section id="downloads"><div class="eyebrow">ВОСПРОИЗВОДИМОСТЬ</div><h2>От записи до результата</h2><div class="download-grid"><a href="../datasets/selrisk-almaty-real-dataset-v0.2.zip" download><b>Датасет v0.2</b><span>ZIP · источники, таблицы, рельеф, проверки</span></a><a id="model-download" href="data/model_power.json" download><b>Модель</b><span>JSON · коэффициенты и train-масштабирование</span></a><a id="report-download" href="data/report_power.json" download><b>Протокол проверки</b><span>JSON · выбор C, ограничения, все части</span></a><a id="pred-download" href="data/predictions_power.csv" download><b>Результаты по дням</b><span>CSV · исходные NULL и роль фоновой выборки</span></a></div><p><a href="data/source_register.csv" download>Реестр источников</a> · <a href="../datasets/NOTICE.md">Лицензии и атрибуция</a> · <a href="../docs/article/article.md">Статья</a> · <a href="../docs/poster/poster.html">Постер</a> · <a href="../docs/slides/slides.html">Презентация</a></p></section>
-</main><footer><span>СельРиск Алматы · исследовательская версия 0.2</span><a href="https://github.com/dulattastanbay-dev/selrisk-almaty">Код на GitHub ↗</a><p>Источники: <a href="https://www.nature.com/articles/s44304-024-00050-7">Reading</a>, <a href="https://power.larc.nasa.gov/docs/referencing/">NASA POWER</a>, <a href="https://www.ncei.noaa.gov/pub/data/ghcn/daily/readme.txt">NOAA GHCN-Daily</a>, <a href="https://registry.opendata.aws/terrain-tiles/">Terrain Tiles</a>. Материалы сторонних источников не перелицензируются в MIT.</p></footer>
-<script src="model.js"></script><script src="app.js"></script></body></html>
+<main class="map-app">
+  <div id="map" aria-label="Карта селевых очагов вокруг Алматы"></div>
+  <header class="map-header">
+    <a class="brand" href="index.html">СельРиск <span>Алматы</span></a>
+    <span class="map-subtitle">Карта модельной вероятности</span>
+    <form id="date-form" class="date-controls">
+      <button type="button" id="today">Сегодня</button>
+      <button type="button" id="tomorrow">Завтра</button>
+      <label for="date">Дата</label><input id="date" type="date" required>
+      <button type="submit" id="calculate">Показать</button>
+    </form>
+  </header>
+  <aside class="map-readout" aria-live="polite">
+    <div id="day-label">Загрузка карты</div>
+    <strong id="region-probability">—</strong>
+    <span>Условная оценка для региона за сутки</span>
+    <p id="status">Загружаем модель и географию…</p>
+  </aside>
+  <aside class="map-legend" aria-label="Цветовая шкала">
+    <b>Вероятность в очаге, %</b>
+    <div class="color-ramp"></div>
+    <div class="legend-values"><span>0,0001</span><span>0,001</span><span>0,01</span><span>0,1</span><span>1+</span></div>
+    <p>Условная модель: 300 дней без записей приняты за бесселевые. Пространство: историческая частота очагов.</p>
+    <small id="weather-source">Погода: —</small>
+  </aside>
+  <button id="reset-map" class="reset-map" type="button" aria-label="Вернуть карту к Алматы">К Алматы</button>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="model.js"></script><script src="map-app.js"></script>
+</body></html>
