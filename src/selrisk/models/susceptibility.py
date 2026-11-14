@@ -1,4 +1,4 @@
-"""Модель подверженности (susceptibility): где в принципе возможен сход.
+"""Legacy DEMO susceptibility model, not validated on observed debris flows.
 
 Random Forest по статическим признакам рельефа и близости к руслам/озёрам.
 Оценка — блочная (пространственная) кросс-валидация: ячейки одного

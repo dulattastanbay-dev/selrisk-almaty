@@ -1,0 +1,618 @@
+{
+  "method": "train_center_day_frequency_plus_one_poisson_allocation_assumption",
+  "train_end": "2005-10-09",
+  "test_used": false,
+  "geometry": "published_mudflow_centers_not_catchments",
+  "matched_training_records": 93,
+  "conditional_not_validated": true,
+  "centers": {
+    "READING_CENTER_0": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_1": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_2": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_3": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_4": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_5": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_6": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_7": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_8": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_9": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_10": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_11": {
+      "count": 1,
+      "weight": 0.00819672131147541
+    },
+    "READING_CENTER_12": {
+      "count": 2,
+      "weight": 0.012295081967213115
+    },
+    "READING_CENTER_13": {
+      "count": 44,
+      "weight": 0.18442622950819673
+    },
+    "READING_CENTER_14": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_15": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_16": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_17": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_18": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_19": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_20": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_21": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_22": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_23": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_24": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_25": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_26": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_27": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_28": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_29": {
+      "count": 1,
+      "weight": 0.00819672131147541
+    },
+    "READING_CENTER_30": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_31": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_32": {
+      "count": 2,
+      "weight": 0.012295081967213115
+    },
+    "READING_CENTER_33": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_34": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_35": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_36": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_37": {
+      "count": 2,
+      "weight": 0.012295081967213115
+    },
+    "READING_CENTER_38": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_39": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_40": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_41": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_42": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_43": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_44": {
+      "count": 3,
+      "weight": 0.01639344262295082
+    },
+    "READING_CENTER_45": {
+      "count": 1,
+      "weight": 0.00819672131147541
+    },
+    "READING_CENTER_46": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_47": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_48": {
+      "count": 4,
+      "weight": 0.020491803278688523
+    },
+    "READING_CENTER_49": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_50": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_51": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_52": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_53": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_54": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_55": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_56": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_57": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_58": {
+      "count": 1,
+      "weight": 0.00819672131147541
+    },
+    "READING_CENTER_59": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_60": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_61": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_62": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_63": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_64": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_65": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_66": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_67": {
+      "count": 2,
+      "weight": 0.012295081967213115
+    },
+    "READING_CENTER_68": {
+      "count": 3,
+      "weight": 0.01639344262295082
+    },
+    "READING_CENTER_69": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_70": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_71": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_72": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_73": {
+      "count": 1,
+      "weight": 0.00819672131147541
+    },
+    "READING_CENTER_74": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_75": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_76": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_77": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_78": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_79": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_80": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_81": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_82": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_83": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_84": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_85": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_86": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_87": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_88": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_89": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_90": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_91": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_92": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_93": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_94": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_95": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_96": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_97": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_98": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_99": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_100": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_101": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_102": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_103": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_104": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_105": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_106": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_107": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_108": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_109": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_110": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_111": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_112": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_113": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_114": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_115": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_116": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_117": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_118": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_119": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_120": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_121": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_122": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_123": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_124": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_125": {
+      "count": 1,
+      "weight": 0.00819672131147541
+    },
+    "READING_CENTER_126": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_127": {
+      "count": 24,
+      "weight": 0.10245901639344263
+    },
+    "READING_CENTER_128": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_129": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_130": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_131": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_132": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_133": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_134": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_135": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_136": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_137": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_138": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_139": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_140": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_141": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_142": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_143": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_144": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_145": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_146": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_147": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_148": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_149": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_150": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    },
+    "READING_CENTER_151": {
+      "count": 0,
+      "weight": 0.004098360655737705
+    }
+  }
+}

@@ -1,0 +1,15 @@
+source_id,url,role,status,license_or_caveat
+reading_paper,https://www.nature.com/articles/s44304-024-00050-7,methodology_and_context,used,article_license_does_not_automatically_relicense_hosted_database
+reading_events,https://services1.arcgis.com/PhkL97KbkzUBf4PQ/arcgis/rest/services/Platform/FeatureServer/0,primary_event_records,downloaded_488_records,ArcGIS_item_licenseInfo_empty
+reading_map,https://www.arcgis.com/sharing/rest/content/items/1c3a2f558aa94242b0b0994b893bde45/data?f=pjson,primary_mudflow_center_polygons,downloaded_152_polygons,not_catchment_boundaries_license_unspecified
+noaa_ghcnd,https://www.ncei.noaa.gov/pub/data/ghcn/daily/readme.txt,station_observations_and_quality_flags,downloaded_5_stations,retain_source_and_quality_flags
+nasa_power,https://power.larc.nasa.gov/docs/services/api/temporal/daily/,regional_daily_reanalysis,downloaded_1981_2025,coarse_regional_not_independent_basin_weather
+legacy_open_meteo_era5,https://open-meteo.com/en/docs/historical-weather-api,ERA5_and_ERA5_Land,legacy_raw_snapshots_reused,fresh_extension_stopped_HTTP429_no_quota_bypass
+legacy_usgs,https://earthquake.usgs.gov/fdsnws/event/1/,earthquake_features,legacy_raw_snapshot_reused,selected_catalogue_threshold_not_all_seismicity
+kazhydromet_2023,https://www.kazhydromet.kz/uploads/files_calendar/9854/file/697ef19bcc711ezhegodnyy-byulleten2023.pdf,additional_2023_observed_events,used_from_previous_verified_extraction,not_forecast_negative_labels
+official_news,https://www.gov.kz/memleket/entities/emer/press/news/details/593405?lang=ru,Talgar_2023_event_confirmation,verified,Left_Talgar_detail_also_in_legacy_notes
+official_news,https://www.inform.kz/ru/sel-soshel-v-uschel-e-levyy-talgar_a3820142,Left_Talgar_2021_event_confirmation,verified,event_date_27_July_not_publication_4_August
+terrain_tiles,https://registry.opendata.aws/terrain-tiles/,real_DEM,downloaded_15_tiles,retain_Mapzen_USGS_NOAA_attribution
+terrain_attribution,https://github.com/tilezen/joerd/blob/master/docs/attribution.md,rights_and_attribution,reviewed,per_source_terms_apply
+hma_glof,https://github.com/fidelsteiner/HMAGLOFDB,GLOF_crosscheck_supplement,downloaded_pinned_git_snapshot,LICENSE_CC0_README_CCBY_conflict_retain_both_and_attribute
+hydrobasins,https://www.hydrosheds.org/products/hydrobasins,catchment_boundaries,not_acquired_download_HTTP403,do_not_substitute_mudflow_center_polygons

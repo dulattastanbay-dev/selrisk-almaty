@@ -1,10 +1,7 @@
-"""Сборка обучающих таблиц из данных о рельефе, погоде, сейсмике и озёрах.
+"""Legacy synthetic DEMO dataset builders; explicit demo context required.
 
-Всё, что помечено как «генерация выборки», физически обосновано, но синтетично
-и служит для запуска пайплайна без закрытых данных. Реальная инвентаризация
-сходов (Казселезащита) и ERA5/USGS подставляются в те же схемы без изменения
-моделей. Метки подверженности порождаются из явной генеративной модели —
-это позволяет честно измерять, восстанавливает ли классификатор зависимость.
+These targets are not observations. Real v0.2 contracts and training are in
+selrisk.realdata and selrisk.research, not a CSV substitution into this module.
 """
 from __future__ import annotations
 
@@ -24,11 +21,13 @@ from .data_ingest.dem import (
 from .data_ingest.earthquakes import energy_from_magnitude
 from .data_ingest.glacial_lakes import lake_features, load_lakes
 from .features import add_antecedent_features
+from .demo import demo_only
 
 
 # ---------------------------------------------------------------------------
 #  Статическая сетка признаков рельефа
 # ---------------------------------------------------------------------------
+@demo_only
 def build_terrain_grid(seed: int | None = None, dem: np.ndarray | None = None) -> pd.DataFrame:
     """Сетка ячеек AOI со всеми статическими признаками для модели подверженности."""
     cfg = load_config()
@@ -112,6 +111,7 @@ def _z(x) -> np.ndarray:
     return (x - x.mean()) / (x.std() + 1e-9)
 
 
+@demo_only
 def latent_score(grid: pd.DataFrame) -> np.ndarray:
     """Стандартизованный «истинный» сигнал подверженности (~N(0,1)).
 
@@ -222,7 +222,7 @@ def daily_eq_series(dates: pd.DatetimeIndex, seed: int) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 def _weather_one_basin(basin: str, dates: pd.DatetimeIndex, rng) -> pd.DataFrame:
     n = len(dates)
-    doy = dates.dayofyear.to_numpy()
+    doy = dates.day_of_year.to_numpy()
 
     tmean = 5.0 + 14.0 * np.sin(2 * np.pi * (doy - 110) / 365.25) + rng.normal(0, 2.5, n)
     tmin = tmean - 6.0 - rng.random(n) * 2
@@ -264,6 +264,7 @@ def _weather_one_basin(basin: str, dates: pd.DatetimeIndex, rng) -> pd.DataFrame
     )
 
 
+@demo_only
 def generate_meteo(grid: pd.DataFrame | None = None, seed: int | None = None,
                    n_events_target: int | None = None, save: bool = True,
                    use_real_weather: bool = True) -> pd.DataFrame:

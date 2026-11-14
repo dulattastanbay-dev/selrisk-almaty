@@ -1,0 +1,149 @@
+{
+  "version": "0.2",
+  "built_on": "2026-11-14",
+  "event_records": 492,
+  "reading_records": 488,
+  "country_counts": {
+    "Kazakhstan": 469,
+    "Uzbekistan": 23
+  },
+  "date_precision_counts": {
+    "day": 374,
+    "day_interval": 60,
+    "multiple_or_unresolved": 28,
+    "year": 27,
+    "month": 2,
+    "missing": 1
+  },
+  "exact_day_records": 373,
+  "date_year_conflicts": [
+    "READING_488"
+  ],
+  "possible_duplicate_rows": 0,
+  "polygon_count": 152,
+  "weather_daily_rows": 16436,
+  "weather_start": "1981-01-01",
+  "weather_end": "2025-12-31",
+  "weather_missing_cells": 0,
+  "strict_true_negatives": 0,
+  "dynamic_power": {
+    "rows": 58440,
+    "positives": 148,
+    "unknown": 58292,
+    "unique_positive_dates": 137,
+    "split_counts": {
+      "test": {
+        "rows": 11688,
+        "positives": 37
+      },
+      "train": {
+        "rows": 36524,
+        "positives": 92
+      },
+      "validation": {
+        "rows": 10228,
+        "positives": 19
+      }
+    }
+  },
+  "regional_power": {
+    "rows": 14610,
+    "positives": 137,
+    "unknown": 14473,
+    "unique_positive_dates": 137,
+    "split_counts": {
+      "test": {
+        "rows": 2922,
+        "positives": 33
+      },
+      "train": {
+        "rows": 9131,
+        "positives": 88
+      },
+      "validation": {
+        "rows": 2557,
+        "positives": 16
+      }
+    }
+  },
+  "dynamic_era5": {
+    "rows": 8766,
+    "positives": 6,
+    "unknown": 8760,
+    "unique_positive_dates": 4,
+    "split_counts": {
+      "test": {
+        "rows": 2190,
+        "positives": 3
+      },
+      "train": {
+        "rows": 5481,
+        "positives": 2
+      },
+      "validation": {
+        "rows": 1095,
+        "positives": 1
+      }
+    }
+  },
+  "noaa": {
+    "observation_rows": 218250,
+    "qa_usable": 210897,
+    "station_count": 5,
+    "regional_rows": 20088,
+    "regional_positives": 102,
+    "complete_feature_rows": 15802,
+    "complete_feature_positives": 85,
+    "split_counts": {
+      "test": {
+        "rows": 3652,
+        "positives": 25,
+        "complete_positives": 16
+      },
+      "train": {
+        "rows": 13514,
+        "positives": 48,
+        "complete_positives": 41
+      },
+      "validation": {
+        "rows": 2922,
+        "positives": 29,
+        "complete_positives": 28
+      }
+    }
+  },
+  "glof_kazakhstan_supplement_rows": 53,
+  "terrain": {
+    "crs": "EPSG:32643",
+    "width": 596,
+    "height": 360,
+    "resolution_m": [
+      90.0,
+      90.0
+    ],
+    "bands": [
+      "elevation_m",
+      "slope_deg",
+      "aspect_sin",
+      "aspect_cos"
+    ],
+    "finite_fraction": 1.0,
+    "elevation_min_m": 717.3905639648438,
+    "elevation_max_m": 4940.748046875
+  },
+  "spatial_grid": {
+    "rows": 8568,
+    "mapped_membership_positives": 300,
+    "unknown": 8268,
+    "block_count": 84
+  },
+  "selected_data_year_coverage": {
+    "noaa_training": "1937-1991",
+    "power_training": "1981-2020",
+    "era5_training": "2016-2023"
+  },
+  "point_coordinate_missing_records": 4,
+  "repaired_polygon_ids": [
+    "READING_CENTER_151"
+  ]
+}

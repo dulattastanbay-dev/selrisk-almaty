@@ -15,11 +15,19 @@ from selrisk.models.triggering import (
     train_calibrated_trigger,
     trigger_contributions,
 )
+from selrisk.demo import demo_mode
+
+
+@pytest.fixture(autouse=True)
+def explicit_legacy_demo():
+    with demo_mode():
+        yield
 
 
 @pytest.fixture(scope="module")
 def grid():
-    return build_terrain_grid(seed=1)
+    with demo_mode():
+        return build_terrain_grid(seed=1)
 
 
 def test_grid_geometry():

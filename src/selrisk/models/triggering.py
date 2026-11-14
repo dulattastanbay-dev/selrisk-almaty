@@ -1,13 +1,7 @@
-"""Триггерная модель (triggering): при каких условиях сход происходит.
+"""Legacy DEMO triggering models, not operational event probabilities.
 
-Три подхода:
-  1. Порог «интенсивность–длительность» осадков (Caine 1980; Guzzetti 2008) —
-     классический интерпретируемый метод, нижняя огибающая триггерных дождей.
-  2. Градиентный бустинг по гидрометеорологическим и сейсмическим признакам —
-     суточная вероятность триггера. Оценка на временном holdout (обучение на
-     ранних годах, тест на поздних) — без утечки во времени.
-  3. Откалиброванная логистическая регрессия — вероятность схода за сутки,
-     которую можно показывать пользователю в процентах (сайт и Streamlit).
+Historical function names are retained for compatibility. Independent
+calibration is not established. Real-data ranking lives in selrisk.research.
 """
 from __future__ import annotations
 
@@ -183,13 +177,13 @@ def calibrated_features(meteo: pd.DataFrame) -> pd.DataFrame:
 
 
 def train_calibrated_trigger(meteo: pd.DataFrame) -> dict:
-    """Логистическая регрессия без взвешивания классов — калиброванная вероятность.
+    """Legacy DEMO logistic model; name retained for source compatibility.
 
-    Бустинг (train_triggering) обучен с balanced-весами и почти запоминает дни
-    событий (≈1 на них и ≈0 на прочих), поэтому его выход нельзя показывать как
-    «процент». Здесь — проверка на том же временном holdout и финальная модель
-    на всём периоде. Возвращает модель, диапазоны признаков и метрики holdout.
+    No independent calibration has been established. This routine fits all
+    demo years and must never be used as the real-data or operational model.
     """
+    from ..demo import require_demo
+    require_demo()
     cfg = load_config()
     trg = cfg["models"]["triggering"]
     C = cfg["models"]["calibrated_trigger"]["C"]

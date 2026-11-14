@@ -1,0 +1,8 @@
+{
+  "version": "0.2",
+  "archive": "datasets/selrisk-almaty-real-dataset-v0.2.zip",
+  "prefix": "selrisk-dataset-v0.2",
+  "sha256": "34eb3bc51264f478f4d79e09aa2d564aad92e5f1d977d028936d0a64cfac161c",
+  "checksums_sha256": "35e31e7aceb11733f5048e3e5b875e5eac1b68a6d09e1888995ccabbbd749f82",
+  "license": "Mixed upstream terms; NOT covered by the repository MIT code license. See NOTICE.md."
+}

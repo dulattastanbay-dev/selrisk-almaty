@@ -1,0 +1,13 @@
+:root{--case-text:clamp(.875rem,.85rem + .15vw,1rem);--case-value:clamp(1.5rem,1.3rem + .8vw,2rem);--case-gap:1.5rem}
+nav{flex-wrap:wrap}
+.case-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--case-gap);margin-top:var(--case-gap)}
+.case-card{background:var(--white);border:1px solid var(--line);padding:var(--case-gap);display:flex;flex-direction:column;align-items:flex-start;font-size:var(--case-text);overflow-wrap:anywhere}
+.case-card>div:first-child{font:500 .75rem/1.5 'IBM Plex Mono',monospace;color:var(--green);margin-bottom:1rem}
+.case-card h3{font-size:var(--case-value);margin:0}
+.case-card p{margin:.5rem 0}
+.case-card .case-score{font:500 var(--case-value)/1.5 'IBM Plex Mono',monospace;margin:1rem 0 .5rem}
+.case-card dl{width:100%;margin:1rem 0;grid-template-columns:140px minmax(0,1fr)}
+.case-card>a{font-size:.75rem;margin-top:auto;padding-top:1rem}
+.case-card button{margin-top:1rem}
+.case-summary{padding:1rem 1.5rem;background:var(--soft);font-size:var(--case-text);border-left:3px solid var(--green)}
+@media(max-width:650px){.case-grid{grid-template-columns:1fr}.case-card dl{grid-template-columns:110px minmax(0,1fr)}#presentation .section-head{gap:1rem}}

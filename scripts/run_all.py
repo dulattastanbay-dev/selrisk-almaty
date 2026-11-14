@@ -31,10 +31,11 @@ def main() -> None:
     print("\n=== 5/5 Интерактивная карта и ГИС-слои ===")
     make_map.main()
     print("\nГотово. Результаты — в data/outputs, модели — в data/models.")
-    print("Демо CLI:   python scripts/predict.py --date 2017-06-15")
-    print("Демо web:   streamlit run app/streamlit_app.py")
-    print("Карта:      docs/map/risk_map.html")
+    print("Демо CLI:   python scripts/predict.py --demo --date 2017-06-15")
+    print("Streamlit открывает только реальный research-интерфейс, не это демо.")
+    print("DEMO карта: data/outputs/demo/map/risk_map.html")
 
 
 if __name__ == "__main__":
-    main()
+    from selrisk.cli import entry
+    entry("run_all", main)

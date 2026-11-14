@@ -139,14 +139,15 @@ def main() -> None:
 
     payload = build_map_payload(grid, meteo, dates)
     html = TEMPLATE.replace("__PAYLOAD__", json.dumps(payload, ensure_ascii=False))
-    out = PROJECT_ROOT / "docs" / "map"
+    out = cfg.path("outputs") / "map"
     out.mkdir(parents=True, exist_ok=True)
     (out / "risk_map.html").write_text(html, encoding="utf-8")
 
-    print(f"[make_map] карта -> docs/map/risk_map.html ({len(payload['cells'])} ячеек, "
+    print(f"[make_map] DEMO карта -> {out / 'risk_map.html'} ({len(payload['cells'])} ячеек, "
           f"{len(dates)} дат)")
     print(f"[make_map] ГИС-слои (GeoJSON + ESRI ASCII) -> {odir}")
 
 
 if __name__ == "__main__":
-    main()
+    from selrisk.cli import entry
+    entry("make_map", main)
