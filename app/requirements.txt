@@ -1,4 +1,4 @@
-# Зависимости Streamlit-демо для Streamlit Community Cloud
+# Зависимости реального исследовательского интерфейса v0.2 для Streamlit Community Cloud
 # (Cloud берёт этот файл, потому что он лежит рядом с app/streamlit_app.py).
 streamlit>=1.50
 numpy>=1.26

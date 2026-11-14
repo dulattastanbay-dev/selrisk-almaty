@@ -1,7 +1,8 @@
 # ============================================================================
 #  SelRisk-Almaty — конфигурация проекта
-#  Оценка риска схода селей и оползней в бассейнах над Алматы
-#  по гидрометеорологическим и сейсмическим данным.
+#  LEGACY DEMO ONLY. Not used by the real v0.2 research workflow.
+#  Approximate basin centers, synthetic features and thresholds below
+#  are not scientifically validated hazard estimates.
 # ============================================================================
 
 project:

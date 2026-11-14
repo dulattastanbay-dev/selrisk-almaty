@@ -1,7 +1,6 @@
-"""Слияние: итоговый риск = подверженность (где) × вероятность триггера (когда).
+"""Legacy DEMO product index. Not a validated probability or expected loss.
 
-Подверженность задаётся по ячейкам, вероятность триггера — по бассейну и дате.
-Для каждой ячейки риск в заданную дату = susc[cell] × trigger[basin(cell), date].
+Kept for compatibility and missing-data regression tests; not used in v0.2 UI.
 """
 from __future__ import annotations
 
@@ -17,7 +16,9 @@ def classify_risk(prob: np.ndarray) -> np.ndarray:
     names = np.array([c["name"] for c in classes])
     uppers = [c["max"] for c in classes][:-1]
     idx = np.digitize(np.asarray(prob), uppers)
-    return names[np.clip(idx, 0, len(names) - 1)]
+    result = names[np.clip(idx, 0, len(names) - 1)].astype(object)
+    p = np.asarray(prob, dtype=float)
+    return np.where(np.isfinite(p) & (p>=0) & (p<=1), result, "нет данных")
 
 
 def risk_color_map() -> dict[str, str]:
@@ -30,19 +31,23 @@ def trigger_level(prob) -> np.ndarray:
     levels = load_config()["models"]["calibrated_trigger"]["levels"]
     names = np.array([lv["name"] for lv in levels])
     idx = np.digitize(np.asarray(prob), [lv["max"] for lv in levels][:-1])
-    return names[np.clip(idx, 0, len(names) - 1)]
+    result = names[np.clip(idx, 0, len(names) - 1)].astype(object)
+    p = np.asarray(prob, dtype=float)
+    return np.where(np.isfinite(p) & (p>=0) & (p<=1), result, "нет данных")
 
 
 def trigger_prob_on_date(meteo_pred: pd.DataFrame, date) -> dict[str, float]:
     """Словарь {бассейн: вероятность триггера} на заданную дату."""
-    d = meteo_pred[meteo_pred["date"] == pd.Timestamp(date)]
+    d = meteo_pred[pd.to_datetime(meteo_pred["date"]) == pd.Timestamp(date)]
+    if d.basin.duplicated().any():
+        raise ValueError("Duplicate basin/date predictions")
     return dict(zip(d["basin"], d["trigger_prob"]))
 
 
 def daily_risk(grid_susc: pd.DataFrame, meteo_pred: pd.DataFrame, date) -> pd.DataFrame:
     """Карта риска по ячейкам на дату. grid_susc содержит basin и susceptibility."""
     tp = trigger_prob_on_date(meteo_pred, date)
-    trig = grid_susc["basin"].map(tp).fillna(0.0).to_numpy()
+    trig = grid_susc["basin"].map(tp).to_numpy(dtype=float)
     risk = grid_susc["susceptibility"].to_numpy() * trig
     out = grid_susc.copy()
     out["trigger_prob"] = trig

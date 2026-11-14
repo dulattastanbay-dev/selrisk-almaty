@@ -158,7 +158,7 @@ def main() -> None:
                    .to_dict(orient="records"),
     }
 
-    out = PROJECT_ROOT / "web" / "data" / "selrisk_data.js"
+    out = cfg.path("outputs") / "selrisk_demo_data.js"
     out.parent.mkdir(parents=True, exist_ok=True)
     js = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     out.write_text("// Сгенерировано scripts/export_web.py — не редактировать вручную.\n"
@@ -167,4 +167,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    from selrisk.cli import entry
+    entry("export_web", main)

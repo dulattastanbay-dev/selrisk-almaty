@@ -48,7 +48,7 @@ def add_antecedent_features(df: pd.DataFrame) -> pd.DataFrame:
     )
     df = df.drop(columns="_pdd")
 
-    doy = df["date"].dt.dayofyear.to_numpy()
+    doy = df["date"].dt.day_of_year.to_numpy()
     df["doy_sin"] = np.sin(2 * np.pi * doy / 365.25)
     df["doy_cos"] = np.cos(2 * np.pi * doy / 365.25)
     return df.reset_index(drop=True)

@@ -1,0 +1,151 @@
+{
+  "version": "0.2",
+  "kind": "stations",
+  "status": "research_ranking_only",
+  "contract": {
+    "schema_status": "valid",
+    "rows": 20088,
+    "positive_days": 102,
+    "unknown_days": 19986,
+    "verified_negative_days": 0
+  },
+  "dataset_sha256": "8c427dcb0bfc867d5095ba43812dd55b08c91ce9e09695f0c20bb5c4cf712a05",
+  "hyperparameter_selection": "validation_origin_AP_only_test_never_used_for_selection",
+  "validation_trials": [
+    {
+      "C": 0.03,
+      "proxy_average_precision": 0.09754323139208136
+    },
+    {
+      "C": 0.3,
+      "proxy_average_precision": 0.08928531133603879
+    },
+    {
+      "C": 3.0,
+      "proxy_average_precision": 0.0879344851986011
+    }
+  ],
+  "selected_C": 0.03,
+  "preprocessing_fit_split": "train_only",
+  "final_refit_on_all_data": false,
+  "exclusion_counts": {
+    "unlabeled_background": 15023,
+    "excluded_uncertain_or_near_event": 4963,
+    "catalogue_positive": 102
+  },
+  "excluded_incomplete_positive_days": 17,
+  "domain_withheld_days": 4301,
+  "metrics": {
+    "presence_background": {
+      "train": {
+        "n_days": 9109,
+        "catalogue_positive_days": 41,
+        "unlabeled_background_days": 9068,
+        "proxy_average_precision": 0.02057081619304968,
+        "proxy_roc_auc": 0.8902707994878802,
+        "catalogue_positive_capture_top_decile": 0.5121951219512195,
+        "actual_selected_fraction": 0.10001097815347458,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      },
+      "validation": {
+        "n_days": 1531,
+        "catalogue_positive_days": 28,
+        "unlabeled_background_days": 1503,
+        "proxy_average_precision": 0.09754323139208136,
+        "proxy_roc_auc": 0.8137772074897822,
+        "catalogue_positive_capture_top_decile": 0.32142857142857145,
+        "actual_selected_fraction": 0.10058785107772697,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      },
+      "test": {
+        "n_days": 1553,
+        "catalogue_positive_days": 16,
+        "unlabeled_background_days": 1537,
+        "proxy_average_precision": 0.07541450673387425,
+        "proxy_roc_auc": 0.8671519193233572,
+        "catalogue_positive_capture_top_decile": 0.625,
+        "actual_selected_fraction": 0.10045074050225371,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      }
+    },
+    "rainfall_3day": {
+      "train": {
+        "n_days": 9109,
+        "catalogue_positive_days": 41,
+        "unlabeled_background_days": 9068,
+        "proxy_average_precision": 0.008865559396942186,
+        "proxy_roc_auc": 0.623648423294996,
+        "catalogue_positive_capture_top_decile": 0.21951219512195122,
+        "actual_selected_fraction": 0.10012075968822044,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      },
+      "validation": {
+        "n_days": 1531,
+        "catalogue_positive_days": 28,
+        "unlabeled_background_days": 1503,
+        "proxy_average_precision": 0.030036430859990578,
+        "proxy_roc_auc": 0.5571713715426291,
+        "catalogue_positive_capture_top_decile": 0.17857142857142858,
+        "actual_selected_fraction": 0.10058785107772697,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      },
+      "test": {
+        "n_days": 1553,
+        "catalogue_positive_days": 16,
+        "unlabeled_background_days": 1537,
+        "proxy_average_precision": 0.021034203555971222,
+        "proxy_roc_auc": 0.6999430709173715,
+        "catalogue_positive_capture_top_decile": 0.25,
+        "actual_selected_fraction": 0.10045074050225371,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      }
+    },
+    "season_only": {
+      "train": {
+        "n_days": 9109,
+        "catalogue_positive_days": 41,
+        "unlabeled_background_days": 9068,
+        "proxy_average_precision": 0.017469379583293178,
+        "proxy_roc_auc": 0.8612650220017859,
+        "catalogue_positive_capture_top_decile": 0.5609756097560976,
+        "actual_selected_fraction": 0.10176748270940827,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      },
+      "validation": {
+        "n_days": 1531,
+        "catalogue_positive_days": 28,
+        "unlabeled_background_days": 1503,
+        "proxy_average_precision": 0.0687625376092032,
+        "proxy_roc_auc": 0.8695585020435319,
+        "catalogue_positive_capture_top_decile": 0.32142857142857145,
+        "actual_selected_fraction": 0.10058785107772697,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      },
+      "test": {
+        "n_days": 1553,
+        "catalogue_positive_days": 16,
+        "unlabeled_background_days": 1537,
+        "proxy_average_precision": 0.08870097558720923,
+        "proxy_roc_auc": 0.9115972674040338,
+        "catalogue_positive_capture_top_decile": 0.5625,
+        "actual_selected_fraction": 0.10173857050869285,
+        "interpretation": "Origin-discrimination metrics only; background may contain unreported events."
+      }
+    }
+  },
+  "limitations": [
+    "No verified negatives; no precision, specificity, false-alarm or calibrated event-probability claim.",
+    "Proxy AP/AUC measure catalogue-positive versus chosen background discrimination, not true event accuracy.",
+    "Unknown registration bias; SCAR and the event class prior are not established.",
+    "Grid weather does not resolve local convective rainfall in mountain gullies.",
+    "All mechanisms are pooled; rainfall-only associations do not validate a GLOF model.",
+    "Retrospective reanalysis latency has not been validated for live deployment.",
+    "Warm-season and temporal dependence may inflate proxy separation; compare season-only baseline.",
+    "Out-of-domain historical scores are included only in retrospective diagnostics; UI withholds them."
+  ],
+  "references": [
+    "https://www.nature.com/articles/s44304-024-00050-7",
+    "https://link.springer.com/article/10.1007/s10994-020-05877-5",
+    "https://scikit-learn.org/stable/common_pitfalls.html"
+  ]
+}

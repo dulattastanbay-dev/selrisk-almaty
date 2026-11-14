@@ -73,4 +73,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    from selrisk.cli import entry
+    entry("evaluate", main)
