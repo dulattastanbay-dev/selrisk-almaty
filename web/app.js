@@ -80,6 +80,9 @@ $("dataset").addEventListener("change",loadKind);$("inspect").onclick=inspect;$(
 document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>switchMode(b.dataset.mode));
 $("manual-panel").onsubmit=e=>{e.preventDefault();try{if(!model)throw Error("Модель недоступна");const row={date:$("scenario-date").value,...SelRiskModel.season($("scenario-date").value)};document.querySelectorAll("[data-feature]").forEach(x=>{row[x.dataset.feature]=x.value.trim()===""?NaN:Number(x.value);});setResult(SelRiskModel.validateScenario(model,row),row);}catch(err){setResult({score:null,status:"invalid"},null,err.message);}};
 $("manual-panel").addEventListener("input",()=>setResult({score:null,status:"invalid"},null,"Сценарий изменён. Выполните расчёт заново; предыдущий балл не используется."));
+// Some static-host proxies redirect file responses and ignore the download hint.
+// In that case open the source in a new tab without losing the current experiment.
+document.querySelectorAll("a[download]").forEach(a=>{a.target="_blank";a.rel="noopener noreferrer";});
 for(const id of ["country","basin","event-type","search"])$(id).addEventListener(id==="search"?"input":"change",filterEvents);
 $("prev").onclick=()=>{pageNo--;renderTable();};$("next").onclick=()=>{pageNo++;renderTable();};
 (async()=>{try{[events,centers]=await Promise.all([get("data/events.json"),get("data/centers.geojson")]);$("event-count").textContent=events.length.toLocaleString("ru");for(const [id,key]of [["country","country"],["basin","basin"],["event-type","event_type"]])for(const s of [...new Set(events.map(e=>e[key]).filter(Boolean))].sort()){$(id).append(new Option(s,s));}filterEvents();await loadKind();}catch(e){$("load-error").hidden=false;$("load-error").textContent=e.message;setResult({score:null,status:"no_data"},null,"Ошибка загрузки. Расчёт не выполнен.");}})();
