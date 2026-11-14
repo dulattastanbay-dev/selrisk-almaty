@@ -1,11 +1,7 @@
-"""SelRisk-Almaty — оценка риска селей и оползней над Алматы.
+"""SelRisk-Almaty: real-data historical presence-background research.
 
-Двухуровневая модель:
-  1. Susceptibility (подверженность) — где в принципе возможен сход,
-     статическая модель по признакам рельефа и близости к озёрам/руслам.
-  2. Triggering (триггер) — при каких гидрометеорологических и сейсмических
-     условиях сход происходит, временная модель по ежедневным рядам.
-  Итоговый риск = подверженность × вероятность триггера.
+The v0.2 workflow provides regional ranking, not calibrated event probability,
+spatial hazard or operational warnings. Legacy demo modules remain explicit.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

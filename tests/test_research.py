@@ -12,6 +12,8 @@ from selrisk.dataset import build_terrain_grid
 
 @pytest.mark.parametrize("kind,n,p",[("power",14610,137),("stations",20088,102)])
 def test_contract(kind,n,p):
+    import selrisk
+    assert selrisk.__version__=="0.2.0"
     d,f,_=load_regional(kind)
     assert len(d)==n and d.target.eq(1).sum()==p and not d.target.eq(0).any()
     out=design(d)
