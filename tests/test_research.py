@@ -116,3 +116,29 @@ def test_data_rerun_reproducible(tmp_path):
     expected=json.loads((ROOT/"web/data/report_power.json").read_text())
     assert report==expected
     assert (tmp_path/"model_power.json").read_bytes()==(ROOT/"web/data/model_power.json").read_bytes()
+
+
+def test_repro_model_tolerance_never_hides_metadata_or_large_changes():
+    from copy import deepcopy
+    from selrisk.reproducibility import compare_model
+    original={"coefficients":[.2,.3],"intercept":1.,"mean":[1.,2.],"scale":[1.,1.],
+              "features":["rain","season"],"verified_negative_days":0}
+    tiny=deepcopy(original);tiny["coefficients"][0]+=1e-12
+    compare_model(original,tiny)
+    bad=deepcopy(original);bad["coefficients"][0]+=.001
+    with pytest.raises(AssertionError):compare_model(original,bad)
+    bad=deepcopy(original);bad["verified_negative_days"]=1
+    with pytest.raises(AssertionError):compare_model(original,bad)
+    bad=deepcopy(original);bad["features"].reverse()
+    with pytest.raises(AssertionError):compare_model(original,bad)
+
+
+def test_repro_prediction_tolerance_never_hides_changed_outcomes_or_status():
+    from selrisk.reproducibility import compare_predictions
+    a="date,target,prediction_status,research_score\n2020-01-01,,available,0.1\n2020-01-02,1,missing_features,\n"
+    compare_predictions(a,a.replace("available,0.1","available,0.100000000001"))
+    for changed in (a.replace("2020-01-01,,","2020-01-01,0,"),
+                    a.replace("available,0.1","available,0.2"),
+                    a.replace("missing_features,","available,"),
+                    a.replace("missing_features,\n","missing_features,0\n")):
+        with pytest.raises(AssertionError):compare_predictions(a,changed)
